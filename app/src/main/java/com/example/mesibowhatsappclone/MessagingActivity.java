@@ -87,19 +87,18 @@ public class MessagingActivity extends AppCompatActivity implements MesiboUserLi
     @Override
     public boolean Mesibo_onClickUser(String s, long l, long l1) {
 
-        Log.v("Userrrrrrr", s);
 
-//        Intent peerMessageIntent = new Intent(MessagingActivity.this, PeerMessageActivity.class);
-//        peerMessageIntent.putExtra("s", s);
-//        peerMessageIntent.putExtra("l", l);
-//        peerMessageIntent.putExtra("l1", l1);
-//        startActivity(peerMessageIntent);
+        Intent peerMessageIntent = new Intent(MessagingActivity.this, PeerMessageActivity.class);
+        peerMessageIntent.putExtra("s", s);
+        peerMessageIntent.putExtra("l", l);
+        peerMessageIntent.putExtra("l1", l1);
+        startActivity(peerMessageIntent);
 
-        Intent intent = new Intent(MessagingActivity.this, com.mesibo.messaging.MessagingActivity.class);
-        intent.putExtra("peer", s);
-        intent.putExtra("groupid", l);
-        intent.putExtra("mid", l1);
-        startActivity(intent);
+//        Intent intent = new Intent(MessagingActivity.this, com.mesibo.messaging.MessagingActivity.class);
+//        intent.putExtra("peer", s);
+//        intent.putExtra("groupid", l);
+//        intent.putExtra("mid", l1);
+//        startActivity(intent);
 
         return true;
     }

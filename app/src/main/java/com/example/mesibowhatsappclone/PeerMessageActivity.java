@@ -22,19 +22,18 @@ public class PeerMessageActivity extends AppCompatActivity {
         long l = intent.getLongExtra("l", 0);
         long l1 = intent.getLongExtra("l1", 0);
 
-//        MesiboMessagingFragment mFragment = (MesiboMessagingFragment) new MesiboMessagingFragment();
-//
-//
-//        Bundle bl = new Bundle();
-//        bl.putString(MesiboUI.PEER, s);
-//        bl.putLong(MesiboUI.GROUP_ID, l);
-//        mFragment.setArguments(bl);
-//
-//
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        fragmentManager.beginTransaction().replace(R.id.fragment_container, mFragment, "null").commit();
-//        Log.v("Hereeeeeeeeeeeeeeee", "............");
-//        MesiboUI.launchMessageView(PeerMessageActivity.this, s, l);
+        MesiboMessagingFragment mFragment = (MesiboMessagingFragment) new MesiboMessagingFragment();
+
+
+        Bundle bl = new Bundle();
+        bl.putString(MesiboUI.PEER, s);
+        bl.putLong(MesiboUI.GROUP_ID, l);
+        mFragment.setArguments(bl);
+
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, mFragment, "null").commit();
+        MesiboUI.launchMessageView(PeerMessageActivity.this, s, l);
 
 
     }

@@ -1,6 +1,7 @@
 package com.example.mesibowhatsappclone;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.mesibo.api.Mesibo;
@@ -43,6 +44,7 @@ public class MesiboFileTransferHelper implements Mesibo.FileTransferHandler {
 
 
     public boolean uploadFile(Mesibo.MessageParams params, final Mesibo.FileInfo file) {
+
 
         /* [OPTIONAL] check the required network connectivity for automatic or manual file download */
         if(Mesibo.getNetworkConnectivity() != Mesibo.CONNECTIVITY_WIFI && !file.userInteraction)

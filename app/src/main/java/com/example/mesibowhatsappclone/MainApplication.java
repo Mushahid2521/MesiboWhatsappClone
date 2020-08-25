@@ -32,6 +32,7 @@ public class MainApplication extends Application {
         /** [OPTIONAL] Customize look and feel of Mesibo UI */
         MesiboUI.Config opt = MesiboUI.getConfig();
         opt.mToolbarColor = 0xff00868b;
+        opt.createGroupTitle = "";
         opt.emptyUserListMessage = "Ask your family and friends to download so that you can try out Mesibo functionalities";
         MediaPicker.setToolbarColor(opt.mToolbarColor);
     }
@@ -53,8 +54,9 @@ public class MainApplication extends Application {
         MesiboFileTransferHelper fileTransferHelper = new MesiboFileTransferHelper();
         Mesibo.addListener(fileTransferHelper);
 
+
         /** add other listener - you can add any number of listeners */
-        Mesibo.addListener(new MesiboListener());
+        //Mesibo.addListener(new MesiboListener());
 
         /** [Optional] enable to disable secure connection */
         Mesibo.setSecureConnection(true);

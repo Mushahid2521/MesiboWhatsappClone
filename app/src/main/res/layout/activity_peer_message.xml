@@ -7,6 +7,57 @@
     android:orientation="vertical"
     tools:context=".PeerMessageActivity">
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryDark"
+            android:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar"
+            >
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/profile_image"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_marginStart="25dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/username"
+                    android:textSize="18sp"
+                    android:text="Hello"
+                    android:textColor="#fff"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/status"
+                    android:textSize="12sp"
+                    android:text=""
+                    android:textColor="#fff"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"

@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
@@ -15,13 +14,11 @@ import android.util.Log;
 
 import com.google.android.material.tabs.TabLayout;
 import com.mesibo.api.Mesibo;
-import com.mesibo.messaging.MesiboUI;
 import com.mesibo.messaging.MesiboUserListFragment;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class MessagingActivity extends AppCompatActivity implements MesiboUserListFragment.FragmentListener{
+public class InboxActivity extends AppCompatActivity implements MesiboUserListFragment.FragmentListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,48 +28,44 @@ public class MessagingActivity extends AppCompatActivity implements MesiboUserLi
         final TabLayout tabLayout = findViewById(R.id.tab_layout);
         final ViewPager viewPager = findViewById(R.id.view_pager);
 
+
+        setUserProfiles();
+
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        /////////
-        MesiboUserListFragment userListFragment = new MesiboUserListFragment();
-        userListFragment.setListener(this);
+        if (savedInstanceState == null) {
 
-        Bundle bl = new Bundle();
-        bl.putInt(MesiboUserListFragment.MESSAGE_LIST_MODE, MesiboUserListFragment.MODE_MESSAGELIST);
-        userListFragment.setArguments(bl);
+            /////////
+            MesiboUserListFragment userListFragment = new MesiboUserListFragment();
+            userListFragment.setListener(this);
 
-        //////////
-        MesiboUserListFragment allUserFragment = new MesiboUserListFragment();
-        allUserFragment.setListener(this);
+            Bundle bl = new Bundle();
+            bl.putInt(MesiboUserListFragment.MESSAGE_LIST_MODE, MesiboUserListFragment.MODE_MESSAGELIST);
+            userListFragment.setArguments(bl);
 
-        Bundle b2 = new Bundle();
-        allUserFragment.mMemberProfiles = getUserProfiles();
-        b2.putInt(MesiboUserListFragment.MESSAGE_LIST_MODE, MesiboUserListFragment.MODE_SELECTCONTACT);
-        allUserFragment.setArguments(b2);
+            //////////
+            MesiboUserListFragment allUserFragment = new MesiboUserListFragment();
+            allUserFragment.setListener(this);
 
-//        FragmentManager fm = getSupportFragmentManager();
-//        FragmentTransaction ft = fm.beginTransaction();
-//        ft.replace(R.id.userlist_fragment, userListFragment, "null");
-//        ft.commit();
+            Bundle b2 = new Bundle();
+            b2.putInt(MesiboUserListFragment.MESSAGE_LIST_MODE, MesiboUserListFragment.MODE_SELECTCONTACT);
+            allUserFragment.setArguments(b2);
 
-//        viewPagerAdapter.addFragment(new ChatFragment(), "Chats");
-//        viewPagerAdapter.addFragment(new UsersFragment(), "Users");
-//        viewPagerAdapter.addFragment(new ProfileFragment(), "Profile");
-        viewPagerAdapter.addFragment(userListFragment, "Chats");
-        viewPagerAdapter.addFragment(allUserFragment, "Contacts");
+            viewPagerAdapter.addFragment(userListFragment, "Chats");
+            viewPagerAdapter.addFragment(allUserFragment, "Contacts");
 
-        viewPager.setAdapter(viewPagerAdapter);
-        tabLayout.setupWithViewPager(viewPager);
-
+            viewPager.setAdapter(viewPagerAdapter);
+            tabLayout.setupWithViewPager(viewPager);
+        }
     }
 
-    private ArrayList<Mesibo.UserProfile> getUserProfiles() {
-        ArrayList<Mesibo.UserProfile> userProfiles = new ArrayList<>();
-        Mesibo.UserProfile new_user = new Mesibo.UserProfile();
-        new_user.name = "seond_user";
-        userProfiles.add(new_user);
-        return userProfiles;
+    private void setUserProfiles() {
+        Mesibo mesibo = Mesibo.getInstance();
+        mesibo.init(getApplicationContext());
+        Mesibo.UserProfile userProfile = Mesibo.getUserProfile("second_user", 0);
+        Mesibo.setUserProfile(userProfile, true);
     }
+
 
     @Override
     public void Mesibo_onUpdateTitle(String s) {
@@ -88,13 +81,13 @@ public class MessagingActivity extends AppCompatActivity implements MesiboUserLi
     public boolean Mesibo_onClickUser(String s, long l, long l1) {
 
 
-        Intent peerMessageIntent = new Intent(MessagingActivity.this, PeerMessageActivity.class);
+        Intent peerMessageIntent = new Intent(InboxActivity.this, PeerMessageActivity.class);
         peerMessageIntent.putExtra("s", s);
         peerMessageIntent.putExtra("l", l);
         peerMessageIntent.putExtra("l1", l1);
         startActivity(peerMessageIntent);
 
-//        Intent intent = new Intent(MessagingActivity.this, com.mesibo.messaging.MessagingActivity.class);
+//        Intent intent = new Intent(InboxActivity.this, com.mesibo.messaging.InboxActivity.class);
 //        intent.putExtra("peer", s);
 //        intent.putExtra("groupid", l);
 //        intent.putExtra("mid", l1);

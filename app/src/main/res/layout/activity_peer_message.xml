@@ -62,6 +62,73 @@
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_weight="12"
         android:orientation="vertical" />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:padding="5dp"
+        android:id="@+id/bottom"
+        android:background="#ffff">
+
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/btn_media"
+            android:background="@drawable/ic_add_foreground"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true" />
+
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:visibility="gone"
+            android:id="@+id/btn_camera"
+            android:background="@drawable/ic_camera_foreground"
+            android:layout_toRightOf="@+id/btn_media"
+            android:layout_toEndOf="@+id/btn_media" />
+
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:visibility="gone"
+            android:id="@+id/btn_image"
+            android:background="@drawable/ic_image_foreground"
+            android:layout_toRightOf="@+id/btn_camera"
+            android:layout_toEndOf="@+id/btn_camera" />
+
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:visibility="gone"
+            android:id="@+id/btn_video"
+            android:background="@drawable/ic_video_foreground"
+            android:layout_toRightOf="@+id/btn_image"
+            android:layout_toEndOf="@+id/btn_image" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:hint="Write a Message"
+            android:id="@+id/send_txt"
+            android:layout_toRightOf="@+id/btn_video"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/btn_video" />
+
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/btn_send"
+            android:background="@drawable/ic_message_foreground"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true" />
+
+
+    </RelativeLayout>
+
 </LinearLayout>
+
+

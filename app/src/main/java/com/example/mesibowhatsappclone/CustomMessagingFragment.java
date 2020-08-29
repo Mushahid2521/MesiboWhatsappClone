@@ -43,6 +43,12 @@ public class CustomMessagingFragment extends MesiboMessagingFragment implements 
     }
 
     @Override
+    public void Mesibo_onFile(Mesibo.MessageParams messageParams, Mesibo.FileInfo fileInfo) {
+        super.Mesibo_onFile(messageParams, fileInfo);
+        Log.v("File Selected", "..............");
+    }
+
+    @Override
     public void Mesibo_onBindViewHolder(MesiboRecycleViewHolder mesiboRecycleViewHolder, int viewType, boolean selected, Mesibo.MessageParams messageParams, Mesibo.MesiboMessage mesiboMessage) {
         if (MesiboRecycleViewHolder.TYPE_CUSTOM == viewType) {
 

@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.mesibo.api.Mesibo;
+import com.mesibo.messaging.MesiboUI;
 
 /** Mesibo allows you to used your own servers for file transfer so that there are no arbitrary limitations
  *

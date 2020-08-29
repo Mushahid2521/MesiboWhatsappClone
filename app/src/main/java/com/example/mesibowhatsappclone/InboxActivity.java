@@ -8,28 +8,34 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 
 import com.google.android.material.tabs.TabLayout;
 import com.mesibo.api.Mesibo;
 import com.mesibo.messaging.MesiboUserListFragment;
 
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class InboxActivity extends AppCompatActivity implements MesiboUserListFragment.FragmentListener{
+public class InboxActivity extends AppCompatActivity implements MesiboUserListFragment.FragmentListener {
 
+    @SuppressLint("LongLogTag")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messaging);
-
         final TabLayout tabLayout = findViewById(R.id.tab_layout);
         final ViewPager viewPager = findViewById(R.id.view_pager);
 
 
-        setUserProfiles();
+        //    setUserProfiles();
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
 
@@ -43,7 +49,7 @@ public class InboxActivity extends AppCompatActivity implements MesiboUserListFr
             bl.putInt(MesiboUserListFragment.MESSAGE_LIST_MODE, MesiboUserListFragment.MODE_MESSAGELIST);
             userListFragment.setArguments(bl);
 
-            //////////
+
             MesiboUserListFragment allUserFragment = new MesiboUserListFragment();
             allUserFragment.setListener(this);
 
@@ -56,14 +62,8 @@ public class InboxActivity extends AppCompatActivity implements MesiboUserListFr
 
             viewPager.setAdapter(viewPagerAdapter);
             tabLayout.setupWithViewPager(viewPager);
-        }
-    }
 
-    private void setUserProfiles() {
-        Mesibo mesibo = Mesibo.getInstance();
-        mesibo.init(getApplicationContext());
-        Mesibo.UserProfile userProfile = Mesibo.getUserProfile("second_user", 0);
-        Mesibo.setUserProfile(userProfile, true);
+        }
     }
 
 
@@ -77,9 +77,9 @@ public class InboxActivity extends AppCompatActivity implements MesiboUserListFr
 
     }
 
+    @SuppressLint("LongLogTag")
     @Override
     public boolean Mesibo_onClickUser(String s, long l, long l1) {
-
 
         Intent peerMessageIntent = new Intent(InboxActivity.this, PeerMessageActivity.class);
         peerMessageIntent.putExtra("s", s);
@@ -102,7 +102,7 @@ public class InboxActivity extends AppCompatActivity implements MesiboUserListFr
     }
 
 
-    public class ViewPagerAdapter extends FragmentPagerAdapter {
+    public static class ViewPagerAdapter extends FragmentPagerAdapter {
 
         private ArrayList<Fragment> fragments;
         private ArrayList<String> titles;

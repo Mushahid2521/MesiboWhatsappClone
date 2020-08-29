@@ -79,6 +79,7 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
         bl.putLong(MesiboUI.GROUP_ID, l);
         bl.putBoolean(MesiboMessagingFragment.SHOWMISSEDCALLS, true);
         bl.putBoolean(MesiboMessagingFragment.HIDE_REPLY, true);
+        //mFragment.addHeaderMessage();
         mFragment.setArguments(bl);
 
         getSupportFragmentManager().beginTransaction().

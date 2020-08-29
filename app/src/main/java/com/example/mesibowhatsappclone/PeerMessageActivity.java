@@ -1,16 +1,30 @@
 package com.example.mesibowhatsappclone;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.NetworkType;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Printer;
 import android.view.Menu;
@@ -31,8 +45,12 @@ import com.mesibo.messaging.MessagingActivityNew;
 import com.mesibo.messaging.a;
 import com.mesibo.messaging.i;
 import com.mesibo.messaging.n;
+import com.orhanobut.logger.Logger;
 
+import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -46,7 +64,7 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
     private TextView send_text_view;
 
     private int MediaButtonClicked;
-    private boolean mediaViewOpen=false;
+    private boolean mediaViewOpen = false;
 
     TextView userNameView;
     TextView userStatusView;
@@ -106,35 +124,26 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
 
         send_btn = (ImageButton) findViewById(R.id.btn_send);
         send_text_view = (TextView) findViewById(R.id.send_txt);
-        send_text_view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mediaViewOpen) {
-                    image_btn.setVisibility(View.GONE);
-                    video_btn.setVisibility(View.GONE);
-                    camera_btn.setVisibility(View.GONE);
-                }
+        send_text_view.setOnClickListener(view -> {
+            if (mediaViewOpen) {
+                image_btn.setVisibility(View.GONE);
+                video_btn.setVisibility(View.GONE);
+                camera_btn.setVisibility(View.GONE);
             }
         });
 
-        send_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendMsg();
-            }
-        });
+        send_btn.setOnClickListener(view -> sendMsg());
 
         media_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!mediaViewOpen) {
+                if (!mediaViewOpen) {
                     image_btn.setVisibility(View.VISIBLE);
                     video_btn.setVisibility(View.VISIBLE);
                     camera_btn.setVisibility(View.VISIBLE);
 
                     mediaViewOpen = true;
-                }
-                else {
+                } else {
                     image_btn.setVisibility(View.GONE);
                     video_btn.setVisibility(View.GONE);
                     camera_btn.setVisibility(View.GONE);
@@ -170,17 +179,17 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
         userStatusView = findViewById(R.id.status);
         userAvatar = findViewById(R.id.profile_image);
 
-        if(userProfile.picturePath==null) {
+        if (userProfile.picturePath == null) {
             userAvatar.setImageResource(R.drawable.ic_launcher);
         } else {
 
         }
 
-        if (userProfile.name!=null) {
+        if (userProfile.name != null) {
             userNameView.setText(userProfile.name);
         }
 
-        if (userProfile.status!=null) {
+        if (userProfile.status != null) {
             userStatusView.setText(userProfile.status);
         } else {
             userStatusView.setText("");
@@ -201,7 +210,7 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
     @Override
     public void Mesibo_onUpdateUserOnlineStatus(Mesibo.UserProfile userProfile, String s) {
         if (s != null) {
-            Log.v("User Statussssss", s);
+            Log.v("User Status", s);
             userStatusView.setText(s);
         } else {
             userStatusView.setText("");
@@ -321,4 +330,40 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
         }
     }
 
+    // java.lang.RuntimeException: Failure delivering result ResultInfo{who=null,
+// request=10000, result=-1, data=Intent { dat=content://media/external/images/media/12122 flg=0x1 (has extras) }}
+// to activity {com.example.mesibowhatsappclone/
+// com.example.mesibowhatsappclone.PeerMessageActivity}: java.lang.NullPointerException: println needs a message
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == MediaPicker.TYPE_FILEIMAGE && resultCode == Activity.RESULT_OK) {
+            assert data != null;
+            Uri i = data.getData();
+            File imageFile = new File(getRealPathFromURI(i));
+            Log.e("PATH is ", imageFile.getPath());
+
+            WorkManager.getInstance(PeerMessageActivity.this).enqueue(new OneTimeWorkRequest
+                    .Builder(ImageUploaderBackgroundWorker.class)
+                    .setInputData(new Data.Builder()
+                            .putString("image_path", imageFile.getAbsolutePath())
+                            .build())
+                    .setConstraints(new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+                    .build());
+        }
+    }
+
+    private String getRealPathFromURI(Uri contentURI) {
+        String result;
+        Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
+        if (cursor == null) { // Source is Dropbox or other similar local file path
+            result = contentURI.getPath();
+        } else {
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            result = cursor.getString(idx);
+            cursor.close();
+        }
+        return result;
+    }
 }

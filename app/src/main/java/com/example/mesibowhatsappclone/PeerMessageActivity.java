@@ -1,56 +1,38 @@
 package com.example.mesibowhatsappclone;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentManager;
-import androidx.work.Constraints;
-import androidx.work.Data;
-import androidx.work.NetworkType;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
-
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.util.Printer;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import com.google.gson.Gson;
 import com.mesibo.api.Mesibo;
 import com.mesibo.calls.MesiboCall;
 import com.mesibo.mediapicker.MediaPicker;
 import com.mesibo.messaging.MesiboMessagingFragment;
 import com.mesibo.messaging.MesiboUI;
-import com.mesibo.messaging.MessagingActivityNew;
-import com.mesibo.messaging.a;
-import com.mesibo.messaging.i;
 import com.mesibo.messaging.n;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
-import java.net.URI;
 import java.util.ArrayList;
-import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -58,7 +40,7 @@ import static com.mesibo.api.Mesibo.FileInfo.MODE_UPLOAD;
 import static com.mesibo.api.Mesibo.FileInfo.TYPE_IMAGE;
 
 public class PeerMessageActivity extends AppCompatActivity implements MesiboMessagingFragment.FragmentListener,
-        View.OnClickListener, Mesibo.FileTransferHandler {
+        View.OnClickListener, Mesibo.FileTransferHandler{
 
     private Mesibo.UserProfile userProfile;
     private ActionBar actionBar;
@@ -346,6 +328,17 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
             Uri i = data.getData();
             File imageFile = new File(getRealPathFromURI(i));
 
+            Mesibo.FileInfo file = new Mesibo.FileInfo();
+            file.setPath(getRealPathFromURI(i));
+            file.setUrl("https://27a19f3e5874.ngrok.io/api/upload");
+            file.mode = MODE_UPLOAD;
+            file.mid = Mesibo.random();
+            file.type = TYPE_IMAGE;
+
+            Mesibo.MessageParams p = new Mesibo.MessageParams();
+            p.profile = userProfile;
+            Mesibo.startFileTranser(file);
+
 //            Mesibo.FileInfo file = new Mesibo.FileInfo();
 //            file.setPath(getRealPathFromURI(i));
 //            file.setUrl("https://27a19f3e5874.ngrok.io/api/upload");
@@ -385,12 +378,151 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
 
 
     @Override
-    public boolean Mesibo_onStartFileTransfer(Mesibo.FileInfo fileInfo) {
-        return false;
+    public boolean Mesibo_onStartFileTransfer(Mesibo.FileInfo file) {
+        Logger.e("we are here...");
+        if(Mesibo.FileInfo.MODE_DOWNLOAD == file.mode)
+            return downloadFile(file.getParams(), file);
+
+        return uploadFile(file.getParams(), file);
     }
 
     @Override
     public boolean Mesibo_onStopFileTransfer(Mesibo.FileInfo fileInfo) {
         return false;
+    }
+
+
+    private static Gson mGson = new Gson();
+    private static Mesibo.HttpQueue mQueue = new Mesibo.HttpQueue(4, 0);
+
+
+    public static class UploadResponse {
+        public String op;
+        public String file;
+        public String result;
+
+        UploadResponse() {
+            result = null;
+            op = null;
+            file = null;
+        }
+    }
+
+   //PeerMessageActivity() {
+   //    Mesibo.addListener(this);
+   //}
+
+
+    public boolean uploadFile(Mesibo.MessageParams params, final Mesibo.FileInfo file) {
+
+
+        /* [OPTIONAL] check the required network connectivity for automatic or manual file download */
+        if(Mesibo.getNetworkConnectivity() != Mesibo.CONNECTIVITY_WIFI && !file.userInteraction)
+            return false;
+
+        final long mid = file.mid;
+
+        /* [OPTIONAL] any POST data to send with the file */
+        Bundle b = new Bundle();
+        b.putString("op", "upload");
+        b.putString("token", SampleAppWebAPi.getToken());
+        b.putLong("mid", mid);
+        /* end of post data */
+
+        Mesibo.Http http = new Mesibo.Http();
+
+        http.url = SampleAppConfiguration.apiUrl;
+        http.postBundle = b;
+        http.uploadFile = file.getPath();
+        http.uploadFileField = "photo";
+        http.other = file;
+        file.setFileTransferContext(http);
+
+        http.listener = new Mesibo.HttpListener() {
+            @Override
+            public boolean Mesibo_onHttpProgress(Mesibo.Http config, int state, int percent) {
+                Mesibo.FileInfo f = (Mesibo.FileInfo)config.other;
+
+                if(100 == percent && Mesibo.Http.STATE_DOWNLOAD == state) {
+
+                    //parse response
+                    String response = config.getDataString();
+                    MesiboFileTransferHelper.UploadResponse uploadResponse = null;
+                    try {
+                        uploadResponse = mGson.fromJson(response, MesiboFileTransferHelper.UploadResponse.class);
+                    } catch (Exception ignored) {}
+
+                    if(null == uploadResponse || null == uploadResponse.file) {
+                        Mesibo.updateFileTransferProgress(f, -1, Mesibo.FileInfo.STATUS_FAILED);
+                        return false;
+                    }
+
+                    f.setUrl(uploadResponse.file);
+                }
+
+                int status = f.getStatus();
+                if(100 == percent || status != Mesibo.FileInfo.STATUS_RETRYLATER) {
+                    status = Mesibo.FileInfo.STATUS_INPROGRESS;
+                    if(percent < 0)
+                        status = Mesibo.FileInfo.STATUS_RETRYLATER;
+                }
+
+                if(percent < 100 || (100 == percent && Mesibo.Http.STATE_DOWNLOAD == state))
+                    Mesibo.updateFileTransferProgress(f, percent, status);
+
+                return ((100 == percent && Mesibo.Http.STATE_DOWNLOAD == state) || status != Mesibo.FileInfo.STATUS_RETRYLATER);
+            }
+        };
+
+        if(null != mQueue)
+            mQueue.queue(http);
+        else if(http.execute()) {
+
+        }
+
+        return true;
+    }
+
+    public boolean downloadFile(final Mesibo.MessageParams params, final Mesibo.FileInfo file) {
+
+        String url = file.getUrl();
+        if(!url.toLowerCase().startsWith("http://") && !url.toLowerCase().startsWith("https://")) {
+            url = SampleAppConfiguration.downloadUrl + url;
+        }
+
+        Mesibo.Http http = new Mesibo.Http();
+
+        http.url = url;
+        http.downloadFile = file.getPath();
+        http.resume = true;
+        http.maxRetries = 10;
+        http.other = file;
+        file.setFileTransferContext(http);
+
+        http.listener = new Mesibo.HttpListener() {
+            @Override
+            public boolean Mesibo_onHttpProgress(Mesibo.Http http, int state, int percent) {
+                Mesibo.FileInfo f = (Mesibo.FileInfo)http.other;
+
+                int status = f.getStatus();
+                if(100 == percent || status != Mesibo.FileInfo.STATUS_RETRYLATER) {
+                    status = Mesibo.FileInfo.STATUS_INPROGRESS;
+                    if(percent < 0)
+                        status = Mesibo.FileInfo.STATUS_RETRYLATER;
+                }
+
+                Mesibo.updateFileTransferProgress(f, percent, status);
+
+                return (100 == percent  || status != Mesibo.FileInfo.STATUS_RETRYLATER);
+            }
+        };
+
+        if(null != mQueue)
+            mQueue.queue(http);
+        else if(http.execute()) {
+
+        }
+
+        return true;
     }
 }

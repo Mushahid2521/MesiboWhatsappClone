@@ -29,6 +29,7 @@ import com.mesibo.mediapicker.MediaPicker;
 import com.mesibo.messaging.MesiboMessagingFragment;
 import com.mesibo.messaging.MesiboUI;
 import com.mesibo.messaging.n;
+import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
@@ -40,7 +41,7 @@ import static com.mesibo.api.Mesibo.FileInfo.MODE_UPLOAD;
 import static com.mesibo.api.Mesibo.FileInfo.TYPE_IMAGE;
 
 public class PeerMessageActivity extends AppCompatActivity implements MesiboMessagingFragment.FragmentListener,
-        View.OnClickListener, Mesibo.FileTransferHandler{
+        View.OnClickListener{
 
     private Mesibo.UserProfile userProfile;
     private ActionBar actionBar;
@@ -64,7 +65,7 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_peer_message);
 
-
+        Logger.addLogAdapter(new AndroidLogAdapter());
         Intent intent = getIntent();
         String s = intent.getStringExtra("s");
         long l = intent.getLongExtra("l", 0);
@@ -326,18 +327,22 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
             assert data != null;
 
             Uri i = data.getData();
-            File imageFile = new File(getRealPathFromURI(i));
+            // File imageFile = new File(getRealPathFromURI(i));
 
-            Mesibo.FileInfo file = new Mesibo.FileInfo();
-            file.setPath(getRealPathFromURI(i));
-            file.setUrl("https://27a19f3e5874.ngrok.io/api/upload");
-            file.mode = MODE_UPLOAD;
-            file.mid = Mesibo.random();
-            file.type = TYPE_IMAGE;
+            Mesibo.FileInfo fileInfo = new Mesibo.FileInfo();
+            fileInfo.setPath(getRealPathFromURI(i));
+            fileInfo.mode = MODE_UPLOAD;
+            fileInfo.mid = Mesibo.random();
+            fileInfo.type = TYPE_IMAGE;
 
             Mesibo.MessageParams p = new Mesibo.MessageParams();
             p.profile = userProfile;
-            Mesibo.startFileTranser(file);
+
+            MesiboFileTransferHelper mesiboFileTransferHelper = new MesiboFileTransferHelper();
+            mesiboFileTransferHelper.uploadFile(p,fileInfo);
+
+
+            // Mesibo.startFileTranser(file);
 
 //            Mesibo.FileInfo file = new Mesibo.FileInfo();
 //            file.setPath(getRealPathFromURI(i));
@@ -377,152 +382,152 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
     }
 
 
-    @Override
-    public boolean Mesibo_onStartFileTransfer(Mesibo.FileInfo file) {
-        Logger.e("we are here...");
-        if(Mesibo.FileInfo.MODE_DOWNLOAD == file.mode)
-            return downloadFile(file.getParams(), file);
-
-        return uploadFile(file.getParams(), file);
-    }
-
-    @Override
-    public boolean Mesibo_onStopFileTransfer(Mesibo.FileInfo fileInfo) {
-        return false;
-    }
-
-
-    private static Gson mGson = new Gson();
-    private static Mesibo.HttpQueue mQueue = new Mesibo.HttpQueue(4, 0);
-
-
-    public static class UploadResponse {
-        public String op;
-        public String file;
-        public String result;
-
-        UploadResponse() {
-            result = null;
-            op = null;
-            file = null;
-        }
-    }
-
-   //PeerMessageActivity() {
-   //    Mesibo.addListener(this);
-   //}
-
-
-    public boolean uploadFile(Mesibo.MessageParams params, final Mesibo.FileInfo file) {
-
-
-        /* [OPTIONAL] check the required network connectivity for automatic or manual file download */
-        if(Mesibo.getNetworkConnectivity() != Mesibo.CONNECTIVITY_WIFI && !file.userInteraction)
-            return false;
-
-        final long mid = file.mid;
-
-        /* [OPTIONAL] any POST data to send with the file */
-        Bundle b = new Bundle();
-        b.putString("op", "upload");
-        b.putString("token", SampleAppWebAPi.getToken());
-        b.putLong("mid", mid);
-        /* end of post data */
-
-        Mesibo.Http http = new Mesibo.Http();
-
-        http.url = SampleAppConfiguration.apiUrl;
-        http.postBundle = b;
-        http.uploadFile = file.getPath();
-        http.uploadFileField = "photo";
-        http.other = file;
-        file.setFileTransferContext(http);
-
-        http.listener = new Mesibo.HttpListener() {
-            @Override
-            public boolean Mesibo_onHttpProgress(Mesibo.Http config, int state, int percent) {
-                Mesibo.FileInfo f = (Mesibo.FileInfo)config.other;
-
-                if(100 == percent && Mesibo.Http.STATE_DOWNLOAD == state) {
-
-                    //parse response
-                    String response = config.getDataString();
-                    MesiboFileTransferHelper.UploadResponse uploadResponse = null;
-                    try {
-                        uploadResponse = mGson.fromJson(response, MesiboFileTransferHelper.UploadResponse.class);
-                    } catch (Exception ignored) {}
-
-                    if(null == uploadResponse || null == uploadResponse.file) {
-                        Mesibo.updateFileTransferProgress(f, -1, Mesibo.FileInfo.STATUS_FAILED);
-                        return false;
-                    }
-
-                    f.setUrl(uploadResponse.file);
-                }
-
-                int status = f.getStatus();
-                if(100 == percent || status != Mesibo.FileInfo.STATUS_RETRYLATER) {
-                    status = Mesibo.FileInfo.STATUS_INPROGRESS;
-                    if(percent < 0)
-                        status = Mesibo.FileInfo.STATUS_RETRYLATER;
-                }
-
-                if(percent < 100 || (100 == percent && Mesibo.Http.STATE_DOWNLOAD == state))
-                    Mesibo.updateFileTransferProgress(f, percent, status);
-
-                return ((100 == percent && Mesibo.Http.STATE_DOWNLOAD == state) || status != Mesibo.FileInfo.STATUS_RETRYLATER);
-            }
-        };
-
-        if(null != mQueue)
-            mQueue.queue(http);
-        else if(http.execute()) {
-
-        }
-
-        return true;
-    }
-
-    public boolean downloadFile(final Mesibo.MessageParams params, final Mesibo.FileInfo file) {
-
-        String url = file.getUrl();
-        if(!url.toLowerCase().startsWith("http://") && !url.toLowerCase().startsWith("https://")) {
-            url = SampleAppConfiguration.downloadUrl + url;
-        }
-
-        Mesibo.Http http = new Mesibo.Http();
-
-        http.url = url;
-        http.downloadFile = file.getPath();
-        http.resume = true;
-        http.maxRetries = 10;
-        http.other = file;
-        file.setFileTransferContext(http);
-
-        http.listener = new Mesibo.HttpListener() {
-            @Override
-            public boolean Mesibo_onHttpProgress(Mesibo.Http http, int state, int percent) {
-                Mesibo.FileInfo f = (Mesibo.FileInfo)http.other;
-
-                int status = f.getStatus();
-                if(100 == percent || status != Mesibo.FileInfo.STATUS_RETRYLATER) {
-                    status = Mesibo.FileInfo.STATUS_INPROGRESS;
-                    if(percent < 0)
-                        status = Mesibo.FileInfo.STATUS_RETRYLATER;
-                }
-
-                Mesibo.updateFileTransferProgress(f, percent, status);
-
-                return (100 == percent  || status != Mesibo.FileInfo.STATUS_RETRYLATER);
-            }
-        };
-
-        if(null != mQueue)
-            mQueue.queue(http);
-        else if(http.execute()) {
-
-        }
-
-        return true;
-    }
+//    @Override
+//    public boolean Mesibo_onStartFileTransfer(Mesibo.FileInfo file) {
+//        Logger.e("we are here...");
+//        if(Mesibo.FileInfo.MODE_DOWNLOAD == file.mode)
+//            return downloadFile(file.getParams(), file);
+//
+//        return uploadFile(file.getParams(), file);
+//    }
+//
+//    @Override
+//    public boolean Mesibo_onStopFileTransfer(Mesibo.FileInfo fileInfo) {
+//        return false;
+//    }
+//
+//
+//    private static Gson mGson = new Gson();
+//    private static Mesibo.HttpQueue mQueue = new Mesibo.HttpQueue(4, 0);
+//
+//
+//    public static class UploadResponse {
+//        public String op;
+//        public String file;
+//        public String result;
+//
+//        UploadResponse() {
+//            result = null;
+//            op = null;
+//            file = null;
+//        }
+//    }
+//
+//   //PeerMessageActivity() {
+//   //    Mesibo.addListener(this);
+//   //}
+//
+//
+//    public boolean uploadFile(Mesibo.MessageParams params, final Mesibo.FileInfo file) {
+//
+//        Logger.e("We are then...");
+//        /* [OPTIONAL] check the required network connectivity for automatic or manual file download */
+//        if(Mesibo.getNetworkConnectivity() != Mesibo.CONNECTIVITY_WIFI && !file.userInteraction)
+//            return false;
+//
+//        final long mid = file.mid;
+//
+//        /* [OPTIONAL] any POST data to send with the file */
+//        Bundle b = new Bundle();
+//        b.putString("op", "upload");
+//        b.putString("token", SampleAppWebAPi.getToken());
+//        b.putLong("mid", mid);
+//        /* end of post data */
+//
+//        Mesibo.Http http = new Mesibo.Http();
+//
+//        http.url = file.getUrl();
+//        http.postBundle = b;
+//        http.uploadFile = file.getPath();
+//        http.uploadFileField = "photo";
+//        http.other = file;
+//        file.setFileTransferContext(http);
+//
+//        http.listener = new Mesibo.HttpListener() {
+//            @Override
+//            public boolean Mesibo_onHttpProgress(Mesibo.Http config, int state, int percent) {
+//                Mesibo.FileInfo f = (Mesibo.FileInfo)config.other;
+//
+//                if(100 == percent && Mesibo.Http.STATE_DOWNLOAD == state) {
+//
+//                    //parse response
+//                    String response = config.getDataString();
+//                    MesiboFileTransferHelper.UploadResponse uploadResponse = null;
+//                    try {
+//                        uploadResponse = mGson.fromJson(response, MesiboFileTransferHelper.UploadResponse.class);
+//                    } catch (Exception ignored) {}
+//
+//                    if(null == uploadResponse || null == uploadResponse.file) {
+//                        Mesibo.updateFileTransferProgress(f, -1, Mesibo.FileInfo.STATUS_FAILED);
+//                        return false;
+//                    }
+//
+//                    f.setUrl(uploadResponse.file);
+//                }
+//
+//                int status = f.getStatus();
+//                if(100 == percent || status != Mesibo.FileInfo.STATUS_RETRYLATER) {
+//                    status = Mesibo.FileInfo.STATUS_INPROGRESS;
+//                    if(percent < 0)
+//                        status = Mesibo.FileInfo.STATUS_RETRYLATER;
+//                }
+//
+//                if(percent < 100 || (100 == percent && Mesibo.Http.STATE_DOWNLOAD == state))
+//                    Mesibo.updateFileTransferProgress(f, percent, status);
+//
+//                return ((100 == percent && Mesibo.Http.STATE_DOWNLOAD == state) || status != Mesibo.FileInfo.STATUS_RETRYLATER);
+//            }
+//        };
+//
+//        if(null != mQueue)
+//            mQueue.queue(http);
+//        else if(http.execute()) {
+//
+//        }
+//
+//        return true;
+//    }
+//
+//    public boolean downloadFile(final Mesibo.MessageParams params, final Mesibo.FileInfo file) {
+//
+//        String url = file.getUrl();
+//        if(!url.toLowerCase().startsWith("http://") && !url.toLowerCase().startsWith("https://")) {
+//            url = SampleAppConfiguration.downloadUrl + url;
+//        }
+//
+//        Mesibo.Http http = new Mesibo.Http();
+//
+//        http.url = url;
+//        http.downloadFile = file.getPath();
+//        http.resume = true;
+//        http.maxRetries = 10;
+//        http.other = file;
+//        file.setFileTransferContext(http);
+//
+//        http.listener = new Mesibo.HttpListener() {
+//            @Override
+//            public boolean Mesibo_onHttpProgress(Mesibo.Http http, int state, int percent) {
+//                Mesibo.FileInfo f = (Mesibo.FileInfo)http.other;
+//
+//                int status = f.getStatus();
+//                if(100 == percent || status != Mesibo.FileInfo.STATUS_RETRYLATER) {
+//                    status = Mesibo.FileInfo.STATUS_INPROGRESS;
+//                    if(percent < 0)
+//                        status = Mesibo.FileInfo.STATUS_RETRYLATER;
+//                }
+//
+//                Mesibo.updateFileTransferProgress(f, percent, status);
+//
+//                return (100 == percent  || status != Mesibo.FileInfo.STATUS_RETRYLATER);
+//            }
+//        };
+//
+//        if(null != mQueue)
+//            mQueue.queue(http);
+//        else if(http.execute()) {
+//
+//        }
+//
+//        return true;
+//    }
 }

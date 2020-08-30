@@ -24,20 +24,24 @@ public class CustomMessagingFragment extends MesiboMessagingFragment implements 
     @Override
     public int Mesibo_onGetItemViewType(Mesibo.MessageParams messageParams, String message) {
 
+        Logger.e("Message is " + message);
 
-        String tag = message.split(" ")[0];
-        if (tag.equals("<>")) {
-            return MesiboRecycleViewHolder.TYPE_CUSTOM;
-        }
-        else if(tag.equals("^^")){
-            return 2581;
-        }
-        else {
-            if (messageParams.isIncoming()) {
-                return MesiboRecycleViewHolder.TYPE_INCOMING;
+        try {
+            String tag = message.split(" ")[0];
+            if (tag.equals("<>")) {
+                return MesiboRecycleViewHolder.TYPE_CUSTOM;
+            } else if (tag.equals("^^")) {
+                return 2581;
             } else {
-                return MesiboRecycleViewHolder.TYPE_OUTGOING;
+                if (messageParams.isIncoming()) {
+                    return MesiboRecycleViewHolder.TYPE_INCOMING;
+                } else {
+                    return MesiboRecycleViewHolder.TYPE_OUTGOING;
+                }
             }
+        } catch (Exception e) {
+            Logger.e("Failed Reason: " + e);
+            return MesiboRecycleViewHolder.TYPE_OUTGOING;
         }
 
 //        return MesiboRecycleViewHolder.TYPE_NONE;
@@ -46,17 +50,15 @@ public class CustomMessagingFragment extends MesiboMessagingFragment implements 
     @Override
     public MesiboRecycleViewHolder Mesibo_onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
-        Logger.e("on " + viewType);
-        Log.e("ViewType ", "int " + viewType);
+        //Logger.e("on " + viewType);
+        //Log.e("ViewType ", "int " + viewType);
         if (viewType == MesiboRecycleViewHolder.TYPE_HEADER) {
             Log.v("Headerrrrrr", "found.......");
         }
         if (MesiboRecycleViewHolder.TYPE_CUSTOM == viewType) {
             View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.special_message_layout, viewGroup, false);
             return new SpecialMessageViewHolder(v);
-        }
-
-        else {
+        } else {
             View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_message_show, viewGroup, false);
             return new IncomingOutgoingMessageViewHolder(v);
         }
@@ -118,15 +120,20 @@ public class CustomMessagingFragment extends MesiboMessagingFragment implements 
             messageViewHolder.mSendStatus.setVisibility(View.VISIBLE);
 
             switch (mesiboMessage.status) {
-                case 0: messageViewHolder.mSendStatus.setText("Sending..");
-                break;
-                case 1: messageViewHolder.mSendStatus.setText("Sent");
-                break;
-                case 2: messageViewHolder.mSendStatus.setText("Delivered");
-                break;
-                case 3: messageViewHolder.mSendStatus.setText("Read");
-                break;
-                default: break;
+                case 0:
+                    messageViewHolder.mSendStatus.setText("Sending..");
+                    break;
+                case 1:
+                    messageViewHolder.mSendStatus.setText("Sent");
+                    break;
+                case 2:
+                    messageViewHolder.mSendStatus.setText("Delivered");
+                    break;
+                case 3:
+                    messageViewHolder.mSendStatus.setText("Read");
+                    break;
+                default:
+                    break;
             }
         }
     }

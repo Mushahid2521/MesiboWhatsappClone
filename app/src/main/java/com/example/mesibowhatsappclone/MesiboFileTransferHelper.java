@@ -81,7 +81,7 @@ public class MesiboFileTransferHelper implements Mesibo.FileTransferHandler {
                     UploadResponse uploadResponse = null;
                     try {
                         uploadResponse = mGson.fromJson(response, UploadResponse.class);
-                    } catch (Exception e) {}
+                    } catch (Exception ignored) {}
 
                     if(null == uploadResponse || null == uploadResponse.file) {
                         Mesibo.updateFileTransferProgress(f, -1, Mesibo.FileInfo.STATUS_FAILED);

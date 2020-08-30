@@ -54,7 +54,11 @@ import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class PeerMessageActivity extends AppCompatActivity implements MesiboMessagingFragment.FragmentListener, View.OnClickListener {
+import static com.mesibo.api.Mesibo.FileInfo.MODE_UPLOAD;
+import static com.mesibo.api.Mesibo.FileInfo.TYPE_IMAGE;
+
+public class PeerMessageActivity extends AppCompatActivity implements MesiboMessagingFragment.FragmentListener,
+        View.OnClickListener, Mesibo.FileTransferHandler {
 
     private Mesibo.UserProfile userProfile;
     private ActionBar actionBar;
@@ -317,7 +321,6 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
                         if (var2 == 1) {
                             MediaPicker.launchPicker(PeerMessageActivity.this, MediaPicker.TYPE_FILEVIDEO);
                         }
-
                     }
                 }
             });
@@ -339,17 +342,30 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == MediaPicker.TYPE_FILEIMAGE && resultCode == Activity.RESULT_OK) {
             assert data != null;
+
             Uri i = data.getData();
             File imageFile = new File(getRealPathFromURI(i));
-            Log.e("PATH is ", imageFile.getPath());
 
-            WorkManager.getInstance(PeerMessageActivity.this).enqueue(new OneTimeWorkRequest
-                    .Builder(ImageUploaderBackgroundWorker.class)
-                    .setInputData(new Data.Builder()
-                            .putString("image_path", imageFile.getAbsolutePath())
-                            .build())
-                    .setConstraints(new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
-                    .build());
+//            Mesibo.FileInfo file = new Mesibo.FileInfo();
+//            file.setPath(getRealPathFromURI(i));
+//            file.setUrl("https://27a19f3e5874.ngrok.io/api/upload");
+//            file.mode = MODE_UPLOAD;
+//            file.mid = Mesibo.random();
+//            file.type = TYPE_IMAGE;
+//            Log.e("PATH is ", imageFile.getPath());
+//
+//            Mesibo.startFileTranser(file);
+//            Mesibo.MessageParams p = new Mesibo.MessageParams();
+//            p.profile=userProfile;
+//            Mesibo.sendFile(p, Mesibo.random(), file);
+
+//            WorkManager.getInstance(PeerMessageActivity.this).enqueue(new OneTimeWorkRequest
+//                    .Builder(ImageUploaderBackgroundWorker.class)
+//                    .setInputData(new Data.Builder()
+//                            .putString("image_path", imageFile.getAbsolutePath())
+//                            .build())
+//                    .setConstraints(new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+//                    .build());
         }
     }
 
@@ -365,5 +381,16 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
             cursor.close();
         }
         return result;
+    }
+
+
+    @Override
+    public boolean Mesibo_onStartFileTransfer(Mesibo.FileInfo fileInfo) {
+        return false;
+    }
+
+    @Override
+    public boolean Mesibo_onStopFileTransfer(Mesibo.FileInfo fileInfo) {
+        return false;
     }
 }

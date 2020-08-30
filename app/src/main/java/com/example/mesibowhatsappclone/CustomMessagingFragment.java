@@ -11,11 +11,12 @@ import androidx.cardview.widget.CardView;
 import com.mesibo.api.Mesibo;
 import com.mesibo.messaging.MesiboMessagingFragment;
 import com.mesibo.messaging.MesiboRecycleViewHolder;
-import com.mesibo.messaging.i;
+import com.orhanobut.logger.Logger;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class CustomMessagingFragment extends MesiboMessagingFragment implements MesiboRecycleViewHolder.Listener, Mesibo.MessageListener {
 
@@ -27,6 +28,9 @@ public class CustomMessagingFragment extends MesiboMessagingFragment implements 
         String tag = message.split(" ")[0];
         if (tag.equals("<>")) {
             return MesiboRecycleViewHolder.TYPE_CUSTOM;
+        }
+        else if(tag.equals("^^")){
+            return 2581;
         }
         else {
             if (messageParams.isIncoming()) {
@@ -41,14 +45,17 @@ public class CustomMessagingFragment extends MesiboMessagingFragment implements 
 
     @Override
     public MesiboRecycleViewHolder Mesibo_onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+
+        Logger.e("on " + viewType);
+        Log.e("ViewType ", "int " + viewType);
         if (viewType == MesiboRecycleViewHolder.TYPE_HEADER) {
             Log.v("Headerrrrrr", "found.......");
         }
         if (MesiboRecycleViewHolder.TYPE_CUSTOM == viewType) {
             View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.special_message_layout, viewGroup, false);
             return new SpecialMessageViewHolder(v);
-
         }
+
         else {
             View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_message_show, viewGroup, false);
             return new IncomingOutgoingMessageViewHolder(v);
@@ -72,9 +79,8 @@ public class CustomMessagingFragment extends MesiboMessagingFragment implements 
             Calendar var1;
             (var1 = Calendar.getInstance()).setTimeInMillis(mesiboMessage.ts);
             Date var2 = var1.getTime();
-            SimpleDateFormat localDateFormat = new SimpleDateFormat("hh:mm aa");
+            SimpleDateFormat localDateFormat = new SimpleDateFormat("hh:mm aa", Locale.US);
             String time = localDateFormat.format(var2);
-
 
             IncomingView.mIncomingMessageTV.setText(mesiboMessage.message);
             IncomingView.mTime.setText(time);
@@ -147,7 +153,7 @@ public class CustomMessagingFragment extends MesiboMessagingFragment implements 
         super.onMediaButtonClicked(i);
     }
 
-    public class SpecialMessageViewHolder extends MesiboRecycleViewHolder {
+    public static class SpecialMessageViewHolder extends MesiboRecycleViewHolder {
         View mViewIncomingMessage;
         TextView mIncomingMessageTV;
         TextView mTime;
@@ -163,7 +169,7 @@ public class CustomMessagingFragment extends MesiboMessagingFragment implements 
         }
     }
 
-    public class IncomingOutgoingMessageViewHolder extends MesiboRecycleViewHolder {
+    public static class IncomingOutgoingMessageViewHolder extends MesiboRecycleViewHolder {
         View mViewIncomingMessage;
         TextView mIncomingMessageTV, mOutgoingMessageTV;
         TextView mIncomingTime, mOutgoingTime, mSendStatus;

@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -348,7 +349,9 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
                         return false;
                     });
             fileInfo.other = imageFile.getName();
+            fileInfo.image = BitmapFactory.decodeFile(actual_path);
             mFragment.Mesibo_onFile(mParameter,fileInfo);
+            Mesibo.startFileTranser(fileInfo);
 
 //            MesiboFileTransferHelper mesiboFileTransferHelper = new MesiboFileTransferHelper();
 //            mesiboFileTransferHelper.uploadFile(p, fileInfo);

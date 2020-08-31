@@ -54,10 +54,8 @@ public class MesiboFileTransferHelper implements Mesibo.FileTransferHandler {
 
         final long mid = file.mid;
 
-        /* [OPTIONAL] any POST data to send with the file */
         Bundle b = new Bundle();
-        b.putString("op", "upload");
-        b.putString("file_name",file.getPath());
+        b.putString("file_name",new Gson().toJson(file.other));
         b.putString("token", SampleAppWebAPi.getToken());
         b.putLong("mid", mid);
         /* end of post data */
@@ -83,7 +81,6 @@ public class MesiboFileTransferHelper implements Mesibo.FileTransferHandler {
                     UploadResponse uploadResponse = null;
                     try {
                         uploadResponse = mGson.fromJson(response, UploadResponse.class);
-                        Logger.e("Upload Response " + uploadResponse.toString());
                     } catch (Exception ignored) {}
 
                     if(null == uploadResponse || null == uploadResponse.file) {
@@ -120,14 +117,14 @@ public class MesiboFileTransferHelper implements Mesibo.FileTransferHandler {
     public boolean downloadFile(final Mesibo.MessageParams params, final Mesibo.FileInfo file) {
 
         String url = file.getUrl();
-        if(!url.toLowerCase().startsWith("http://") && !url.toLowerCase().startsWith("https://")) {
-            url = SampleAppConfiguration.downloadUrl + url;
-        }
-
+//        if(!url.toLowerCase().startsWith("http://") && !url.toLowerCase().startsWith("https://")) {
+//            url = SampleAppConfiguration.downloadUrl + url;
+//        }
+        Logger.e("Download Url is " + url);
         Mesibo.Http http = new Mesibo.Http();
 
         http.url = url;
-        http.downloadFile = file.getUrl();
+        http.downloadFile = file.getPath();
         http.resume = true;
         http.maxRetries = 10;
         http.other = file;

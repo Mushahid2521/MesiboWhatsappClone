@@ -342,8 +342,10 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
                         Logger.e("File Transfer In Progress");
                         return false;
                     });
-            int sendFileResult = Mesibo.sendFile(mParameter, randomId, fileInfo);
-            Log.e("Send Result", "Result is "+ sendFileResult);
+
+            //int sendFileResult = Mesibo.sendFile(mParameter, randomId, fileInfo);
+            mFragment.Mesibo_onFile(mParameter, fileInfo);
+            //Log.e("Send Result", "Result is "+ sendFileResult);
 
 //            MesiboFileTransferHelper mesiboFileTransferHelper = new MesiboFileTransferHelper();
 //            mesiboFileTransferHelper.uploadFile(p, fileInfo);

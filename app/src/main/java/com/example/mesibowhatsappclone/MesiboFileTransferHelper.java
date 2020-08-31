@@ -165,6 +165,7 @@ public class MesiboFileTransferHelper implements Mesibo.FileTransferHandler {
      */
     @Override
     public boolean Mesibo_onStartFileTransfer(Mesibo.FileInfo file) {
+        Log.v("Starting a File", "Transferrrrrrrrrrr");
         if(Mesibo.FileInfo.MODE_DOWNLOAD == file.mode)
             return downloadFile(file.getParams(), file);
 

@@ -5,8 +5,7 @@ public class SampleAppConfiguration {
     // so that it only shows contacts created in your test environment
     public static String namespace = "aXmsal0q7nNNy";
 
-    public static String apiUrl = "https://e1c98f3c70dd.ngrok.io/api/upload";
-    public static String downloadUrl = "https://e1c98f3c70dd.ngrok.io/static/cdn/shop_images/";
+    public static String apiUrl = "https://2a45d468f375.ngrok.io/api/upload";
 
     public static int toolbarColor = 0xff00868b;
     public static String emptyUserListMessage = "Ask your family and friends to download so that you can try out Mesibo functionalities";

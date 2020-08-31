@@ -56,9 +56,9 @@ public class MesiboFileTransferHelper implements Mesibo.FileTransferHandler {
         final long mid = file.mid;
 
         Bundle b = new Bundle();
-        b.putString("file_name", new Gson().toJson(file.other));
         b.putString("token", SampleAppWebAPi.getToken());
         b.putLong("mid", mid);
+        b.putInt("file_type", file.type);
         /* end of post data */
 
         Mesibo.Http http = new Mesibo.Http();
@@ -68,6 +68,9 @@ public class MesiboFileTransferHelper implements Mesibo.FileTransferHandler {
         http.uploadFile = file.getPath();
         http.uploadFileField = "photo";
         http.other = file;
+        http.resume = true;
+        http.maxRetries = 10;
+        http.bodyTimeout = 100000000;
         file.setFileTransferContext(http);
 
         http.listener = new Mesibo.HttpListener() {
@@ -119,9 +122,6 @@ public class MesiboFileTransferHelper implements Mesibo.FileTransferHandler {
     public boolean downloadFile(final Mesibo.MessageParams params, final Mesibo.FileInfo file) {
 
         String url = file.getUrl();
-        if (!url.toLowerCase().startsWith("http://") && !url.toLowerCase().startsWith("https://")) {
-            url = SampleAppConfiguration.downloadUrl + url;
-        }
         Logger.e("Download Url is " + url);
         Mesibo.Http http = new Mesibo.Http();
 
@@ -130,6 +130,7 @@ public class MesiboFileTransferHelper implements Mesibo.FileTransferHandler {
         http.resume = true;
         http.maxRetries = 10;
         http.other = file;
+        http.bodyTimeout=1000000000;
         file.setFileTransferContext(http);
 
         http.listener = new Mesibo.HttpListener() {

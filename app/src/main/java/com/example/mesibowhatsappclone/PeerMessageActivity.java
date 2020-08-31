@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.mesibo.api.Mesibo;
+import com.mesibo.api.MesiboFileProvider;
 import com.mesibo.calls.MesiboCall;
 import com.mesibo.mediapicker.MediaPicker;
 import com.mesibo.messaging.MesiboMessagingFragment;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.mesibo.api.Mesibo.FileInfo.TYPE_IMAGE;
+import static com.mesibo.api.Mesibo.FileInfo.TYPE_VIDEO;
 
 public class PeerMessageActivity extends AppCompatActivity implements MesiboMessagingFragment.FragmentListener,
         View.OnClickListener {
@@ -322,7 +324,8 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == MediaPicker.TYPE_FILEIMAGE && resultCode == Activity.RESULT_OK) {
+
+        if(resultCode == Activity.RESULT_OK){
             assert data != null;
 
             Uri i = data.getData();
@@ -337,49 +340,43 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
             mParameter.groupid = 0;
             mParameter.profile = userProfile;
 
-            Mesibo.FileInfo fileInfo = Mesibo.getFileInstance(mParameter,
-                    randomId,
-                    Mesibo.FileInfo.MODE_UPLOAD,
-                    TYPE_IMAGE,
-                    Mesibo.FileInfo.SOURCE_MESSAGE,
-                    actual_path,
-                    SampleAppConfiguration.apiUrl,
-                    fileInfo1 -> {
-                        Logger.e("File Transfer In Progress");
-                        return false;
-                    });
+            Mesibo.FileInfo fileInfo = null;
+
+            if (requestCode == MediaPicker.TYPE_FILEIMAGE || requestCode==MediaPicker.TYPE_CAMERAIMAGE) {
+                fileInfo = Mesibo.getFileInstance(mParameter,
+                        randomId,
+                        Mesibo.FileInfo.MODE_UPLOAD,
+                        TYPE_IMAGE,
+                        Mesibo.FileInfo.SOURCE_MESSAGE,
+                        actual_path,
+                        SampleAppConfiguration.apiUrl,
+                        fileInfo1 -> {
+                            Logger.e("File Transfer In Progress");
+                            return false;
+                        });
+            }
+            else if(requestCode==MediaPicker.TYPE_FILEVIDEO){
+                fileInfo = Mesibo.getFileInstance(mParameter,
+                        randomId,
+                        Mesibo.FileInfo.MODE_UPLOAD,
+                        TYPE_VIDEO,
+                        Mesibo.FileInfo.SOURCE_MESSAGE,
+                        actual_path,
+                        SampleAppConfiguration.apiUrl,
+                        fileInfo1 -> {
+                            Logger.e("File Transfer In Progress");
+                            return false;
+                        });
+            }
+
+            assert fileInfo != null;
             fileInfo.other = imageFile.getName();
             fileInfo.image = BitmapFactory.decodeFile(actual_path);
+            fileInfo.userInteraction = true;
             mFragment.Mesibo_onFile(mParameter,fileInfo);
             Mesibo.startFileTranser(fileInfo);
-
-//            MesiboFileTransferHelper mesiboFileTransferHelper = new MesiboFileTransferHelper();
-//            mesiboFileTransferHelper.uploadFile(p, fileInfo);
-
-
-            // Mesibo.startFileTranser(file);
-
-//            Mesibo.FileInfo file = new Mesibo.FileInfo();
-//            file.setPath(getRealPathFromURI(i));
-//            file.setUrl("https://27a19f3e5874.ngrok.io/api/upload");
-//            file.mode = MODE_UPLOAD;
-//            file.mid = Mesibo.random();
-//            file.type = TYPE_IMAGE;
-//            Log.e("PATH is ", imageFile.getPath());
-//
-//            Mesibo.startFileTranser(file);
-//            Mesibo.MessageParams p = new Mesibo.MessageParams();
-//            p.profile=userProfile;
-//            Mesibo.sendFile(p, Mesibo.random(), file);
-
-//            WorkManager.getInstance(PeerMessageActivity.this).enqueue(new OneTimeWorkRequest
-//                    .Builder(ImageUploaderBackgroundWorker.class)
-//                    .setInputData(new Data.Builder()
-//                            .putString("image_path", imageFile.getAbsolutePath())
-//                            .build())
-//                    .setConstraints(new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
-//                    .build());
         }
+
     }
 
     private String getRealPathFromURI(Uri contentURI) {

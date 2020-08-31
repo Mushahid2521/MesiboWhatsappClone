@@ -132,8 +132,8 @@ public class SampleAppWebAPi {
 //
 //        http.execute();
 
-        setStringValue("token", "ce3a32a03240bd86e0f49e6faa19db97add620e5ff2e3314f37e");
-        mToken = "ce3a32a03240bd86e0f49e6faa19db97add620e5ff2e3314f37e";
+        setStringValue("token", "48eb6784e3eb51f0b98490ae5697f116b2feea974e4afd32e2214f647");
+        mToken = "48eb6784e3eb51f0b98490ae5697f116b2feea974e4afd32e2214f647";
         Mesibo.reset();
 
         /* start mesibo before saving contacts */

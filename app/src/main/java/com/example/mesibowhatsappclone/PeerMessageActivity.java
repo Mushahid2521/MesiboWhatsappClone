@@ -31,6 +31,7 @@ import com.mesibo.messaging.n;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -324,7 +325,8 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
             assert data != null;
 
             Uri i = data.getData();
-            // File imageFile = new File(getRealPathFromURI(i));
+            String actual_path = getRealPathFromURI(i);
+            File imageFile = new File(actual_path);
 
             long randomId = Mesibo.random();
 
@@ -337,15 +339,16 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
             Mesibo.FileInfo fileInfo = Mesibo.getFileInstance(mParameter,
                     randomId,
                     Mesibo.FileInfo.MODE_UPLOAD,
-                    TYPE_IMAGE, Mesibo.FileInfo.SOURCE_MESSAGE, getRealPathFromURI(i), SampleAppConfiguration.apiUrl,
+                    TYPE_IMAGE,
+                    Mesibo.FileInfo.SOURCE_MESSAGE,
+                    actual_path,
+                    SampleAppConfiguration.apiUrl,
                     fileInfo1 -> {
                         Logger.e("File Transfer In Progress");
                         return false;
                     });
-
-            //int sendFileResult = Mesibo.sendFile(mParameter, randomId, fileInfo);
-            mFragment.Mesibo_onFile(mParameter, fileInfo);
-            //Log.e("Send Result", "Result is "+ sendFileResult);
+            fileInfo.other = imageFile.getName();
+            mFragment.Mesibo_onFile(mParameter,fileInfo);
 
 //            MesiboFileTransferHelper mesiboFileTransferHelper = new MesiboFileTransferHelper();
 //            mesiboFileTransferHelper.uploadFile(p, fileInfo);

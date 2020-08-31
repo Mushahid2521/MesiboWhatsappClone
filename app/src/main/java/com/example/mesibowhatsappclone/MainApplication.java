@@ -51,8 +51,8 @@ public class MainApplication extends Application {
         /** [Optional] add listener for file transfer handler
          * you only need if you plan to send and receive files using mesibo
          * */
-//        MesiboFileTransferHelper fileTransferHelper = new MesiboFileTransferHelper();
-//        Mesibo.addListener(fileTransferHelper);
+        MesiboFileTransferHelper fileTransferHelper = new MesiboFileTransferHelper();
+        Mesibo.addListener(fileTransferHelper);
 
 
         /** add other listener - you can add any number of listeners */

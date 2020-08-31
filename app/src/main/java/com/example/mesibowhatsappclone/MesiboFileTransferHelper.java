@@ -6,6 +6,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.mesibo.api.Mesibo;
 import com.mesibo.messaging.MesiboUI;
+import com.orhanobut.logger.Logger;
 
 /** Mesibo allows you to used your own servers for file transfer so that there are no arbitrary limitations
  *
@@ -56,6 +57,7 @@ public class MesiboFileTransferHelper implements Mesibo.FileTransferHandler {
         /* [OPTIONAL] any POST data to send with the file */
         Bundle b = new Bundle();
         b.putString("op", "upload");
+        b.putString("file_name",file.getPath());
         b.putString("token", SampleAppWebAPi.getToken());
         b.putLong("mid", mid);
         /* end of post data */
@@ -81,6 +83,7 @@ public class MesiboFileTransferHelper implements Mesibo.FileTransferHandler {
                     UploadResponse uploadResponse = null;
                     try {
                         uploadResponse = mGson.fromJson(response, UploadResponse.class);
+                        Logger.e("Upload Response " + uploadResponse.toString());
                     } catch (Exception ignored) {}
 
                     if(null == uploadResponse || null == uploadResponse.file) {
@@ -124,7 +127,7 @@ public class MesiboFileTransferHelper implements Mesibo.FileTransferHandler {
         Mesibo.Http http = new Mesibo.Http();
 
         http.url = url;
-        http.downloadFile = file.getPath();
+        http.downloadFile = file.getUrl();
         http.resume = true;
         http.maxRetries = 10;
         http.other = file;

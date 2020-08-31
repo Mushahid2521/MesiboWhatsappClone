@@ -337,13 +337,16 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
             Mesibo.FileInfo fileInfo = Mesibo.getFileInstance(mParameter,
                     randomId,
                     Mesibo.FileInfo.MODE_UPLOAD,
-                    TYPE_IMAGE, Mesibo.FileInfo.SOURCE_MESSAGE, getRealPathFromURI(i), SampleAppConfiguration.apiUrl,
+                    TYPE_IMAGE,
+                    Mesibo.FileInfo.SOURCE_MESSAGE,
+                    getRealPathFromURI(i),
+                    SampleAppConfiguration.apiUrl,
                     fileInfo1 -> {
                         Logger.e("File Transfer In Progress");
                         return false;
                     });
-            int sendFileResult = Mesibo.sendFile(mParameter, randomId, fileInfo);
-            Log.e("Send Result", "Result is "+ sendFileResult);
+            fileInfo.other = "Hi there";
+            mFragment.Mesibo_onFile(mParameter,fileInfo);
 
 //            MesiboFileTransferHelper mesiboFileTransferHelper = new MesiboFileTransferHelper();
 //            mesiboFileTransferHelper.uploadFile(p, fileInfo);

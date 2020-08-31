@@ -42,7 +42,7 @@ import static com.mesibo.api.Mesibo.FileInfo.TYPE_IMAGE;
 import static com.mesibo.api.Mesibo.FileInfo.TYPE_VIDEO;
 
 public class PeerMessageActivity extends AppCompatActivity implements MesiboMessagingFragment.FragmentListener,
-        View.OnClickListener {
+        View.OnClickListener{
 
     private Mesibo.UserProfile userProfile;
     private ActionBar actionBar;
@@ -325,7 +325,7 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(resultCode == Activity.RESULT_OK){
+        if (resultCode == Activity.RESULT_OK) {
             assert data != null;
 
             Uri i = data.getData();
@@ -342,7 +342,7 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
 
             Mesibo.FileInfo fileInfo = null;
 
-            if (requestCode == MediaPicker.TYPE_FILEIMAGE || requestCode==MediaPicker.TYPE_CAMERAIMAGE) {
+            if (requestCode == MediaPicker.TYPE_FILEIMAGE || requestCode == MediaPicker.TYPE_CAMERAIMAGE) {
                 fileInfo = Mesibo.getFileInstance(mParameter,
                         randomId,
                         Mesibo.FileInfo.MODE_UPLOAD,
@@ -354,8 +354,7 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
                             Logger.e("File Transfer In Progress");
                             return false;
                         });
-            }
-            else if(requestCode==MediaPicker.TYPE_FILEVIDEO){
+            } else if (requestCode == MediaPicker.TYPE_FILEVIDEO) {
                 fileInfo = Mesibo.getFileInstance(mParameter,
                         randomId,
                         Mesibo.FileInfo.MODE_UPLOAD,
@@ -373,8 +372,9 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
             fileInfo.other = imageFile.getName();
             fileInfo.image = BitmapFactory.decodeFile(actual_path);
             fileInfo.userInteraction = true;
-            mFragment.Mesibo_onFile(mParameter,fileInfo);
-            Mesibo.startFileTranser(fileInfo);
+            mFragment.Mesibo_onFile(mParameter, fileInfo);
+            boolean result = Mesibo.startFileTranser(fileInfo);
+            Logger.e("Result is " + result);
         }
 
     }
@@ -394,5 +394,9 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
     }
 
 
-
+//    @Override
+//    public boolean Mesibo_onFileTransferProgress(Mesibo.FileInfo fileInfo) {
+//        Logger.e("File " + fileInfo.getPath() + "  is Uploading");
+//        return false;
+//    }
 }

@@ -63,17 +63,7 @@ public class ImageUploaderBackgroundWorker extends Worker {
         return false;
     }
 
-    private String getRealPathFromURI(Uri contentURI) {
-        String result;
-        Cursor cursor = context.getContentResolver().query(contentURI, null, null, null, null);
-        if (cursor == null) { // Source is Dropbox or other similar local file path
-            result = contentURI.getPath();
-        } else {
-            cursor.moveToFirst();
-            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-            result = cursor.getString(idx);
-            cursor.close();
-        }
-        return result;
+    private void startTransfer(){
+
     }
 }

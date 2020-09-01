@@ -21,6 +21,7 @@
                 android:paddingRight="@dimen/_5sdp"
                 android:paddingLeft="@dimen/_5sdp"
                 android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/textview_msg_recive"
                     android:layout_width="wrap_content"
@@ -28,6 +29,14 @@
                     android:text="hi"
                     android:textSize="@dimen/_14sdp"
                     android:visibility="visible"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_launcher"
+                    android:visibility="gone"
+                    android:id="@+id/imageview_msg_recive"/>
+
                 <TextView
                     android:id="@+id/textview_recive_time"
                     android:layout_gravity="right"
@@ -69,6 +78,14 @@
                         android:textSize="@dimen/_14sdp"
                         android:visibility="visible"
                         android:layout_marginBottom="@dimen/_5sdp"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_launcher"
+                        android:visibility="gone"
+                        android:id="@+id/imageview_msg_send"/>
+
                     <TextView
                         android:id="@+id/textview_send_time"
                         android:layout_gravity="right"

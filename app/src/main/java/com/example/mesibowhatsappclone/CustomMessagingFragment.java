@@ -1,9 +1,11 @@
 package com.example.mesibowhatsappclone;
 
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -11,12 +13,13 @@ import androidx.cardview.widget.CardView;
 import com.mesibo.api.Mesibo;
 import com.mesibo.messaging.MesiboMessagingFragment;
 import com.mesibo.messaging.MesiboRecycleViewHolder;
-import com.orhanobut.logger.Logger;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import static com.mesibo.api.Mesibo.FileInfo.TYPE_IMAGE;
 
 public class CustomMessagingFragment extends MesiboMessagingFragment implements MesiboRecycleViewHolder.Listener, Mesibo.MessageListener {
 
@@ -24,119 +27,130 @@ public class CustomMessagingFragment extends MesiboMessagingFragment implements 
     @Override
     public int Mesibo_onGetItemViewType(Mesibo.MessageParams messageParams, String message) {
 
-//        Logger.e("Message is " + message);
-//
-//        try {
-//            String tag = message.split(" ")[0];
-//            if (tag.equals("<>")) {
-//                return MesiboRecycleViewHolder.TYPE_CUSTOM;
-//            } else if (tag.equals("^^")) {
-//                return 2581;
-//            } else {
-//                if (messageParams.isIncoming()) {
-//                    return MesiboRecycleViewHolder.TYPE_INCOMING;
-//                } else {
-//                    return MesiboRecycleViewHolder.TYPE_OUTGOING;
-//                }
-//            }
-//        } catch (Exception e) {
-//            Logger.e("Failed Reason: " + e);
-//            return MesiboRecycleViewHolder.TYPE_OUTGOING;
-//        }
 
-        return MesiboRecycleViewHolder.TYPE_NONE;
+        try {
+            String tag = message.split(" ")[0];
+            if (tag.equals("<>")) {
+                return MesiboRecycleViewHolder.TYPE_CUSTOM;
+            } else if (tag.equals("^^")) {
+                return 2581;
+            } else {
+                if (messageParams.isIncoming()) {
+                    return MesiboRecycleViewHolder.TYPE_INCOMING;
+                } else {
+                    return MesiboRecycleViewHolder.TYPE_OUTGOING;
+                }
+            }
+        } catch (Exception e) {
+            return MesiboRecycleViewHolder.TYPE_OUTGOING;
+        }
+
+//        return MesiboRecycleViewHolder.TYPE_NONE;
     }
 
     @Override
     public MesiboRecycleViewHolder Mesibo_onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-//
-//        //Logger.e("on " + viewType);
-//        //Log.e("ViewType ", "int " + viewType);
-//        if (viewType == MesiboRecycleViewHolder.TYPE_HEADER) {
-//            Log.v("Headerrrrrr", "found.......");
-//        }
-//        if (MesiboRecycleViewHolder.TYPE_CUSTOM == viewType) {
-//            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.special_message_layout, viewGroup, false);
-//            return new SpecialMessageViewHolder(v);
-//        } else {
-//            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_message_show, viewGroup, false);
-//            return new IncomingOutgoingMessageViewHolder(v);
-//        }
 
-        return null;
+        //Logger.e("on " + viewType);
+        //Log.e("ViewType ", "int " + viewType);
+        if (viewType == MesiboRecycleViewHolder.TYPE_HEADER) {
+
+        }
+        if (MesiboRecycleViewHolder.TYPE_CUSTOM == viewType) {
+            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.special_message_layout, viewGroup, false);
+            return new SpecialMessageViewHolder(v);
+        } else {
+            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_message_show, viewGroup, false);
+            return new IncomingOutgoingMessageViewHolder(v);
+        }
+
+//        return null;
     }
 
-    @Override
-    public void Mesibo_onFile(Mesibo.MessageParams messageParams, Mesibo.FileInfo fileInfo) {
-        Log.v("On File Function ", "..........");
-        super.Mesibo_onFile(messageParams, fileInfo);
-    }
 
     @Override
     public void Mesibo_onBindViewHolder(MesiboRecycleViewHolder mesiboRecycleViewHolder, int viewType, boolean selected, Mesibo.MessageParams messageParams, Mesibo.MesiboMessage mesiboMessage) {
 
-//        if (MesiboRecycleViewHolder.TYPE_CUSTOM == viewType) {
-//
-//            SpecialMessageViewHolder IncomingView = (SpecialMessageViewHolder) mesiboRecycleViewHolder;
-//            IncomingView.totoal_view.setVisibility(View.VISIBLE);
-//            Calendar var1;
-//            (var1 = Calendar.getInstance()).setTimeInMillis(mesiboMessage.ts);
-//            Date var2 = var1.getTime();
-//            SimpleDateFormat localDateFormat = new SimpleDateFormat("hh:mm aa", Locale.US);
-//            String time = localDateFormat.format(var2);
-//
-//            IncomingView.mIncomingMessageTV.setText(mesiboMessage.message);
-//            IncomingView.mTime.setText(time);
-//
-//        }
-//
-//        if (MesiboRecycleViewHolder.TYPE_INCOMING == viewType) {
-//            IncomingOutgoingMessageViewHolder messageViewHolder = (IncomingOutgoingMessageViewHolder) mesiboRecycleViewHolder;
-//            messageViewHolder.mOutgoing_total_view.setVisibility(View.GONE);
-//            messageViewHolder.mIncoming_total_view.setVisibility(View.VISIBLE);
-//
-//            Calendar var1;
-//            (var1 = Calendar.getInstance()).setTimeInMillis(mesiboMessage.ts);
-//            Date var2 = var1.getTime();
-//            SimpleDateFormat localDateFormat = new SimpleDateFormat("hh:mm aa");
-//            String time = localDateFormat.format(var2);
-//
-//            messageViewHolder.mIncomingMessageTV.setText(mesiboMessage.message);
-//            messageViewHolder.mIncomingTime.setText(time);
-//        }
-//
-//        if (MesiboRecycleViewHolder.TYPE_OUTGOING == viewType) {
-//            IncomingOutgoingMessageViewHolder messageViewHolder = (IncomingOutgoingMessageViewHolder) mesiboRecycleViewHolder;
-//            messageViewHolder.mOutgoing_total_view.setVisibility(View.VISIBLE);
-//            messageViewHolder.mIncoming_total_view.setVisibility(View.GONE);
-//
-//            Calendar var1;
-//            (var1 = Calendar.getInstance()).setTimeInMillis(mesiboMessage.ts);
-//            Date var2 = var1.getTime();
-//            SimpleDateFormat localDateFormat = new SimpleDateFormat("hh:mm aa");
-//            String time = localDateFormat.format(var2);
-//
-//            messageViewHolder.mOutgoingMessageTV.setText(mesiboMessage.message);
-//            messageViewHolder.mOutgoingTime.setText(time);
-//            messageViewHolder.mSendStatus.setVisibility(View.VISIBLE);
-//
-//            switch (mesiboMessage.status) {
-//                case 0:
-//                    messageViewHolder.mSendStatus.setText("Sending..");
-//                    break;
-//                case 1:
-//                    messageViewHolder.mSendStatus.setText("Sent");
-//                    break;
-//                case 2:
-//                    messageViewHolder.mSendStatus.setText("Delivered");
-//                    break;
-//                case 3:
-//                    messageViewHolder.mSendStatus.setText("Read");
-//                    break;
-//                default:
-//                    break;
-//            }
-//        }
+        if (MesiboRecycleViewHolder.TYPE_CUSTOM == viewType) {
+
+            SpecialMessageViewHolder IncomingView = (SpecialMessageViewHolder) mesiboRecycleViewHolder;
+            IncomingView.totoal_view.setVisibility(View.VISIBLE);
+            Calendar var1;
+            (var1 = Calendar.getInstance()).setTimeInMillis(mesiboMessage.ts);
+            Date var2 = var1.getTime();
+            SimpleDateFormat localDateFormat = new SimpleDateFormat("hh:mm aa", Locale.US);
+            String time = localDateFormat.format(var2);
+
+            IncomingView.mIncomingMessageTV.setText(mesiboMessage.message);
+            IncomingView.mTime.setText(time);
+
+        }
+
+        if (MesiboRecycleViewHolder.TYPE_INCOMING == viewType) {
+            IncomingOutgoingMessageViewHolder messageViewHolder = (IncomingOutgoingMessageViewHolder) mesiboRecycleViewHolder;
+            messageViewHolder.mOutgoing_total_view.setVisibility(View.GONE);
+            messageViewHolder.mIncoming_total_view.setVisibility(View.VISIBLE);
+
+            Calendar var1;
+            (var1 = Calendar.getInstance()).setTimeInMillis(mesiboMessage.ts);
+            Date var2 = var1.getTime();
+            SimpleDateFormat localDateFormat = new SimpleDateFormat("hh:mm aa");
+            String time = localDateFormat.format(var2);
+
+
+            if (mesiboMessage.file == null) {
+                messageViewHolder.mIncomingMessageTV.setText(mesiboMessage.message);
+            } else {
+                Log.v("File Info In Recycle: ", mesiboMessage.file.image + " ");
+                messageViewHolder.mIncomingMessageTV.setVisibility(View.GONE);
+                messageViewHolder.mIncomingMessageIV.setVisibility(View.VISIBLE);
+                messageViewHolder.mIncomingMessageIV.setImageBitmap(mesiboMessage.file.image);
+            }
+            messageViewHolder.mIncomingTime.setText(time);
+
+        }
+
+        if (MesiboRecycleViewHolder.TYPE_OUTGOING == viewType) {
+            IncomingOutgoingMessageViewHolder messageViewHolder = (IncomingOutgoingMessageViewHolder) mesiboRecycleViewHolder;
+            messageViewHolder.mOutgoing_total_view.setVisibility(View.VISIBLE);
+            messageViewHolder.mIncoming_total_view.setVisibility(View.GONE);
+
+            Calendar var1;
+            (var1 = Calendar.getInstance()).setTimeInMillis(mesiboMessage.ts);
+            Date var2 = var1.getTime();
+            SimpleDateFormat localDateFormat = new SimpleDateFormat("hh:mm aa");
+            String time = localDateFormat.format(var2);
+
+
+            if (mesiboMessage.file == null) {
+                messageViewHolder.mOutgoingMessageTV.setText(mesiboMessage.message);
+            } else {
+                Log.v("File Info In Recycle: ", mesiboMessage.file.image + " ");
+                messageViewHolder.mOutgoingMessageTV.setVisibility(View.GONE);
+                messageViewHolder.mOutgoingMessageIV.setVisibility(View.VISIBLE);
+                messageViewHolder.mOutgoingMessageIV.setImageBitmap(mesiboMessage.file.image);
+            }
+
+            messageViewHolder.mOutgoingTime.setText(time);
+            messageViewHolder.mSendStatus.setVisibility(View.VISIBLE);
+
+            switch (mesiboMessage.status) {
+                case 0:
+                    messageViewHolder.mSendStatus.setText("Sending..");
+                    break;
+                case 1:
+                    messageViewHolder.mSendStatus.setText("Sent");
+                    break;
+                case 2:
+                    messageViewHolder.mSendStatus.setText("Delivered");
+                    break;
+                case 3:
+                    messageViewHolder.mSendStatus.setText("Read");
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     @Override
@@ -177,8 +191,9 @@ public class CustomMessagingFragment extends MesiboMessagingFragment implements 
         }
     }
 
-    public static class IncomingOutgoingMessageViewHolder extends MesiboRecycleViewHolder {
+    public static class IncomingOutgoingMessageViewHolder extends MesiboRecycleViewHolder{
         View mViewIncomingMessage;
+        ImageView mIncomingMessageIV, mOutgoingMessageIV;
         TextView mIncomingMessageTV, mOutgoingMessageTV;
         TextView mIncomingTime, mOutgoingTime, mSendStatus;
         CardView mIncoming_total_view, mOutgoing_total_view;
@@ -189,12 +204,17 @@ public class CustomMessagingFragment extends MesiboMessagingFragment implements 
             mIncoming_total_view = v.findViewById(R.id.cardview_recive_messsage);
             mOutgoing_total_view = v.findViewById(R.id.cardview_send_messsage);
 
+
             mIncomingMessageTV = v.findViewById(R.id.textview_msg_recive);
             mOutgoingMessageTV = v.findViewById(R.id.textview_msg_send);
+
 
             mIncomingTime = v.findViewById(R.id.textview_recive_time);
             mOutgoingTime = v.findViewById(R.id.textview_send_time);
             mSendStatus = v.findViewById(R.id.textview_msg_send_status);
+
+            mIncomingMessageIV = v.findViewById(R.id.imageview_msg_recive);
+            mOutgoingMessageIV = v.findViewById(R.id.imageview_msg_send);
 
             mViewIncomingMessage = v;
         }

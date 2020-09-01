@@ -22,27 +22,33 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 
 import com.mesibo.api.Mesibo;
 import com.mesibo.api.MesiboFileProvider;
+import com.mesibo.calls.MesiboAudioCallFragment;
 import com.mesibo.calls.MesiboCall;
+import com.mesibo.calls.MesiboCallConfig;
+import com.mesibo.calls.MesiboVideoCallFragment;
 import com.mesibo.mediapicker.MediaPicker;
 import com.mesibo.messaging.MesiboMessagingFragment;
 import com.mesibo.messaging.MesiboUI;
 import com.mesibo.messaging.n;
 import com.orhanobut.logger.AndroidLogAdapter;
-import com.orhanobut.logger.Logger;
 
 import java.io.File;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static com.mesibo.api.Mesibo.FileInfo.STATUS_INPROGRESS;
 import static com.mesibo.api.Mesibo.FileInfo.TYPE_IMAGE;
 import static com.mesibo.api.Mesibo.FileInfo.TYPE_VIDEO;
 
 public class PeerMessageActivity extends AppCompatActivity implements MesiboMessagingFragment.FragmentListener,
-        View.OnClickListener{
+        View.OnClickListener, MesiboCall.MesiboCallListener{
+
+    //private MesiboCall mesiboCall;
 
     private Mesibo.UserProfile userProfile;
     private ActionBar actionBar;
@@ -66,7 +72,6 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_peer_message);
 
-        Logger.addLogAdapter(new AndroidLogAdapter());
         Intent intent = getIntent();
         String s = intent.getStringExtra("s");
         long l = intent.getLongExtra("l", 0);
@@ -76,6 +81,12 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
 
         setToolbar();
 
+
+//        mesiboCall = MesiboCall.getInstance();
+//        //mesiboCall.setListener(this);
+//        MesiboCallConfig mesiboCallConfig = mesiboCall.getConfig();
+//        mesiboCallConfig.backgroundColor = R.color.myPrimaryColor;
+//        mesiboCallConfig.enableDialer = false;
 
         mFragment = new CustomMessagingFragment();
 
@@ -170,6 +181,7 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
         if (userProfile.picturePath == null) {
             userAvatar.setImageResource(R.drawable.ic_launcher);
         } else {
+            // TODO: Load the profile picture from profile picture URL
 
         }
 
@@ -248,7 +260,9 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
 
     @Override
     public boolean onSupportNavigateUp() {
-        onBackPressed();
+        Log.v("back Pressed", "............");
+        mFragment.Mesibo_onBackPressed();
+        super.onBackPressed();
         return true;
     }
 
@@ -339,6 +353,8 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
             mParameter.peer = userProfile.name;
             mParameter.groupid = 0;
             mParameter.profile = userProfile;
+            mParameter.type = TYPE_IMAGE;
+            mParameter.setStatus(STATUS_INPROGRESS);
 
             Mesibo.FileInfo fileInfo = null;
 
@@ -351,7 +367,6 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
                         actual_path,
                         SampleAppConfiguration.apiUrl,
                         fileInfo1 -> {
-                            Logger.e("File Transfer In Progress");
                             return false;
                         });
             } else if (requestCode == MediaPicker.TYPE_FILEVIDEO) {
@@ -363,18 +378,22 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
                         actual_path,
                         SampleAppConfiguration.apiUrl,
                         fileInfo1 -> {
-                            Logger.e("File Transfer In Progress");
+
                             return false;
                         });
             }
 
             assert fileInfo != null;
+
             fileInfo.other = imageFile.getName();
             fileInfo.image = BitmapFactory.decodeFile(actual_path);
+            Log.v("File Inffooo", String.valueOf(fileInfo.image));
             fileInfo.userInteraction = true;
+
+
             mFragment.Mesibo_onFile(mParameter, fileInfo);
+
             boolean result = Mesibo.startFileTranser(fileInfo);
-            Logger.e("Result is " + result);
         }
 
     }
@@ -393,10 +412,57 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
         return result;
     }
 
+    @Override
+    public boolean MesiboCall_onNotify(int i, Mesibo.UserProfile userProfile, boolean b) {
+        return false;
+    }
+
+    @Override
+    public MesiboVideoCallFragment MesiboCall_getVideoCallFragment(Mesibo.UserProfile userProfile) {
+        return null;
+    }
+
+    @Override
+    public MesiboAudioCallFragment MesiboCall_getAudioCallFragment(Mesibo.UserProfile userProfile) {
+        return null;
+    }
+
+    @Override
+    public Fragment MesiboCall_getIncomingAudioCallFragment(Mesibo.UserProfile userProfile) {
+        AudioIncomingFragment audioIncomingFragment = new AudioIncomingFragment();
+        audioIncomingFragment.setUserProfile(userProfile);
+
+        return audioIncomingFragment;
+    }
+
 
 //    @Override
 //    public boolean Mesibo_onFileTransferProgress(Mesibo.FileInfo fileInfo) {
 //        Logger.e("File " + fileInfo.getPath() + "  is Uploading");
 //        return false;
 //    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mFragment.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mFragment.onPause();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mFragment.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mFragment.onStop();
+    }
 }

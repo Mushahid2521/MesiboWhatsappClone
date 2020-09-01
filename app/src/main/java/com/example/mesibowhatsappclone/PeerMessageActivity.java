@@ -387,10 +387,11 @@ public class PeerMessageActivity extends AppCompatActivity implements MesiboMess
 
             fileInfo.other = imageFile.getName();
             fileInfo.image = BitmapFactory.decodeFile(actual_path);
+            fileInfo.message = String.valueOf(actual_path);
             Log.v("File Inffooo", String.valueOf(fileInfo.image));
             fileInfo.userInteraction = true;
 
-
+            Log.v("From Peer activity", String.valueOf(fileInfo.image));
             mFragment.Mesibo_onFile(mParameter, fileInfo);
 
             boolean result = Mesibo.startFileTranser(fileInfo);

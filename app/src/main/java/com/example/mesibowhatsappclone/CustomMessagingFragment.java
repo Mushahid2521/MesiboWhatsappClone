@@ -97,14 +97,15 @@ public class CustomMessagingFragment extends MesiboMessagingFragment implements 
             SimpleDateFormat localDateFormat = new SimpleDateFormat("hh:mm aa");
             String time = localDateFormat.format(var2);
 
-
+//            messageViewHolder.mIncomingMessageTV.setText(mesiboMessage.message);
             if (mesiboMessage.file == null) {
                 messageViewHolder.mIncomingMessageTV.setText(mesiboMessage.message);
             } else {
-                Log.v("File Info In Recycle: ", mesiboMessage.file.image + " ");
                 messageViewHolder.mIncomingMessageTV.setVisibility(View.GONE);
                 messageViewHolder.mIncomingMessageIV.setVisibility(View.VISIBLE);
-                messageViewHolder.mIncomingMessageIV.setImageBitmap(mesiboMessage.file.image);
+                String url = mesiboMessage.file.message;
+                Log.v("File Info In Recycle: ", url.substring(0, url.length()-1));
+                messageViewHolder.mIncomingMessageIV.setImageURI(Uri.parse(url.substring(0, url.length()-1)));
             }
             messageViewHolder.mIncomingTime.setText(time);
 
@@ -121,14 +122,15 @@ public class CustomMessagingFragment extends MesiboMessagingFragment implements 
             SimpleDateFormat localDateFormat = new SimpleDateFormat("hh:mm aa");
             String time = localDateFormat.format(var2);
 
-
+//            messageViewHolder.mOutgoingMessageTV.setText(mesiboMessage.message);
             if (mesiboMessage.file == null) {
                 messageViewHolder.mOutgoingMessageTV.setText(mesiboMessage.message);
             } else {
-                Log.v("File Info In Recycle: ", mesiboMessage.file.image + " ");
                 messageViewHolder.mOutgoingMessageTV.setVisibility(View.GONE);
                 messageViewHolder.mOutgoingMessageIV.setVisibility(View.VISIBLE);
-                messageViewHolder.mOutgoingMessageIV.setImageBitmap(mesiboMessage.file.image);
+                String url = mesiboMessage.file.message;
+                Log.v("File Info In Recycle: ", url.substring(0, url.length()-1));
+                messageViewHolder.mOutgoingMessageIV.setImageURI(Uri.parse(url.substring(0, url.length()-1)));
             }
 
             messageViewHolder.mOutgoingTime.setText(time);

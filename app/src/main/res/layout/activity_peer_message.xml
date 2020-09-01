@@ -115,6 +115,7 @@
             android:hint="Write a Message"
             android:id="@+id/send_txt"
             android:layout_toRightOf="@+id/btn_video"
+            android:layout_toStartOf="@+id/btn_send"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@+id/btn_video" />
 
@@ -123,8 +124,7 @@
             android:layout_height="40dp"
             android:id="@+id/btn_send"
             android:background="@drawable/ic_message_foreground"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentEnd="true" />
 
 
     </RelativeLayout>

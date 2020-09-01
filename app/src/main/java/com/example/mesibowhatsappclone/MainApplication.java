@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.mesibo.api.Mesibo;
 import com.mesibo.calls.MesiboCall;
+import com.mesibo.calls.MesiboCallConfig;
 import com.mesibo.mediapicker.MediaPicker;
 import com.mesibo.messaging.MesiboUI;
 
@@ -45,6 +46,8 @@ public class MainApplication extends Application {
 
         /** [OPTIONAL] Initializa calls if used  */
         mCall = MesiboCall.getInstance();
+        MesiboCallConfig mesiboCallConfig = mCall.getConfig();
+        mesiboCallConfig.backgroundColor = R.color.colorPrimaryDark;
         mCall.init(this);
 
 

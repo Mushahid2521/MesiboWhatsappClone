@@ -5,6 +5,6 @@ public class SampleAppConfiguration {
     // so that it only shows contacts created in your test environment
     public static String namespace = "aXmsal0q7nNNy";
 
-    public static String apiUrl = "https://33141b44c2a1.ngrok.io/api/upload";
+    public static String apiUrl = "https://1bb12f8b22a0.ngrok.io/api/upload";
 
 }

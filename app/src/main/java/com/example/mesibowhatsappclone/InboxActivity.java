@@ -11,8 +11,6 @@ import androidx.viewpager.widget.ViewPager;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Message;
-import android.util.Log;
 
 import com.google.android.material.tabs.TabLayout;
 import com.mesibo.api.Mesibo;
@@ -20,9 +18,6 @@ import com.mesibo.messaging.MesiboUserListFragment;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class InboxActivity extends AppCompatActivity implements MesiboUserListFragment.FragmentListener {
 
@@ -81,17 +76,17 @@ public class InboxActivity extends AppCompatActivity implements MesiboUserListFr
     @Override
     public boolean Mesibo_onClickUser(String s, long l, long l1) {
 
-        Intent peerMessageIntent = new Intent(InboxActivity.this, PeerMessageActivity.class);
-        peerMessageIntent.putExtra("s", s);
-        peerMessageIntent.putExtra("l", l);
-        peerMessageIntent.putExtra("l1", l1);
-        startActivity(peerMessageIntent);
+//        Intent peerMessageIntent = new Intent(InboxActivity.this, PeerMessageActivity.class);
+//        peerMessageIntent.putExtra("s", s);
+//        peerMessageIntent.putExtra("l", l);
+//        peerMessageIntent.putExtra("l1", l1);
+//        startActivity(peerMessageIntent);
 
-//        Intent intent = new Intent(InboxActivity.this, com.mesibo.messaging.InboxActivity.class);
-//        intent.putExtra("peer", s);
-//        intent.putExtra("groupid", l);
-//        intent.putExtra("mid", l1);
-//        startActivity(intent);
+        Intent intent = new Intent(InboxActivity.this, CustomMessagingActivityNew.class);
+        intent.putExtra("peer", s);
+        intent.putExtra("groupid", l);
+        intent.putExtra("mid", l1);
+        startActivity(intent);
 
         return true;
     }

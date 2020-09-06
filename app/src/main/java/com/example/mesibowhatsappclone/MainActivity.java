@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.mesibo.messaging.MesiboUI;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -47,5 +49,6 @@ public class MainActivity extends AppCompatActivity {
     private void startMessagingActivity() {
         Intent intent = new Intent(MainActivity.this, InboxActivity.class);
         startActivity(intent);
+        //MesiboUI.launch(MainActivity.this, 0, false, false);
     }
 }

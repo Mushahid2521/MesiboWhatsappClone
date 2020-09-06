@@ -16,7 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RFClient {
    // BASE URL must end with a trailing /
-    public static final String BASE_URL = "https://33141b44c2a1.ngrok.io";
+    public static final String BASE_URL = "https://d5c2f387c6f4.ngrok.io";
     private static Retrofit retrofit = null;
 
     private static Gson gson = new GsonBuilder()

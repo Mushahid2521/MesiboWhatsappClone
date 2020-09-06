@@ -104,8 +104,8 @@ public class CustomMessagingFragment extends MesiboMessagingFragment implements 
                 messageViewHolder.mIncomingMessageTV.setVisibility(View.GONE);
                 messageViewHolder.mIncomingMessageIV.setVisibility(View.VISIBLE);
                 String url = mesiboMessage.file.message;
-                Log.v("File Info In Recycle: ", url.substring(0, url.length()-1));
-                messageViewHolder.mIncomingMessageIV.setImageURI(Uri.parse(url.substring(0, url.length()-1)));
+                //Log.v("File Info In Recycle: ", url.substring(0, url.length()-1));
+                //messageViewHolder.mIncomingMessageIV.setImageURI(Uri.parse(url.substring(0, url.length()-1)));
             }
             messageViewHolder.mIncomingTime.setText(time);
 

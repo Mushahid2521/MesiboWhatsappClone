@@ -3,9 +3,11 @@ package com.example.mesibowhatsappclone;
 
 import android.app.Application;
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.mesibo.api.Mesibo;
+import com.mesibo.api.MesiboFileProvider;
 import com.mesibo.calls.MesiboCall;
 import com.mesibo.calls.MesiboCallConfig;
 import com.mesibo.mediapicker.MediaPicker;
@@ -32,10 +34,18 @@ public class MainApplication extends Application {
 
         /** [OPTIONAL] Customize look and feel of Mesibo UI */
         MesiboUI.Config opt = MesiboUI.getConfig();
-        opt.mToolbarColor = 0xff00868b;
+
+        opt.mToolbarColor = 0xFF4CAF50;
+        opt.enableVoiceCall = true;
+        opt.enableVideoCall = true;
         opt.createGroupTitle = "";
         opt.emptyUserListMessage = "Ask your family and friends to download so that you can try out Mesibo functionalities";
         MediaPicker.setToolbarColor(opt.mToolbarColor);
+
+
+        MesiboCallConfig mesiboCallConfig = MesiboCall.getInstance().getConfig();
+        mesiboCallConfig.backgroundColor = 0xFF4CAF50;
+
     }
 
     private void mesiboInit() {
@@ -46,8 +56,6 @@ public class MainApplication extends Application {
 
         /** [OPTIONAL] Initializa calls if used  */
         mCall = MesiboCall.getInstance();
-        MesiboCallConfig mesiboCallConfig = mCall.getConfig();
-        mesiboCallConfig.backgroundColor = R.color.colorPrimaryDark;
         mCall.init(this);
 
 

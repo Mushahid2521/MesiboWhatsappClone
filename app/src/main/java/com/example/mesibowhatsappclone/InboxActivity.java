@@ -31,7 +31,6 @@ public class InboxActivity extends AppCompatActivity implements MesiboUserListFr
 
 
         //    setUserProfiles();
-
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         if (savedInstanceState == null) {

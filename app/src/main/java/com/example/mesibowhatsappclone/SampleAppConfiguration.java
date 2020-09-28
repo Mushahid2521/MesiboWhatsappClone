@@ -5,6 +5,6 @@ public class SampleAppConfiguration {
     // so that it only shows contacts created in your test environment
     public static String namespace = "aXmsal0q7nNNy";
 
-    public static String apiUrl = "https://d5c2f387c6f4.ngrok.io/api/upload";
+    public static String apiUrl = "https://cbf17979a9ce.ngrok.io/api/v2/mesibo/conversations/file_upload";
 
 }

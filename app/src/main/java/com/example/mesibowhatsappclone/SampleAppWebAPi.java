@@ -57,8 +57,7 @@ public class SampleAppWebAPi {
     public static synchronized  void init() {
         if(null != mSharedPref) return;
 
-        mSharedPref = MainApplication.getContext().getSharedPreferences(mSharedPrefKey, Context.MODE_PRIVATE);
-        mToken = getStringValue("token", null);
+        mToken = "48eb6784e3eb51f0b98490ae5697f116b2feea974e4afd32e2214f647";
 
         if(isLoggedin())
             MainApplication.startMesibo();
@@ -75,20 +74,20 @@ public class SampleAppWebAPi {
     public static void login(String name, String phone) {
 
         Log.v("Mesiboooooooooo", "Trying to Start");
-
-        Bundle b = new Bundle();
-        b.putString("op", "login");
-        b.putString("ns", SampleAppConfiguration.namespace);
-        b.putString("aid", MainApplication.getContext().getPackageName());
-        b.putString("name", name);
-        b.putString("phone", phone);
-        /* end of post data */
-
-        Mesibo.Http http = new Mesibo.Http();
-
-        http.url = SampleAppConfiguration.apiUrl;
-        http.postBundle = b;
-        http.onMainThread = true;
+//
+//        Bundle b = new Bundle();
+//        b.putString("op", "login");
+//        b.putString("ns", SampleAppConfiguration.namespace);
+//        b.putString("aid", MainApplication.getContext().getPackageName());
+//        b.putString("name", name);
+//        b.putString("phone", phone);
+//        /* end of post data */
+//
+//        Mesibo.Http http = new Mesibo.Http();
+//
+//        http.url = SampleAppConfiguration.apiUrl;
+//        http.postBundle = b;
+//        http.onMainThread = true;
 
 //        http.listener = new Mesibo.HttpListener() {
 //            @Override
@@ -132,52 +131,51 @@ public class SampleAppWebAPi {
 //
 //        http.execute();
 
-        setStringValue("token", "ce3a32a03240bd86e0f49e6faa19db97add620e5ff2e3314f37e");
-        mToken = "ce3a32a03240bd86e0f49e6faa19db97add620e5ff2e3314f37e";
+        setStringValue("token", "48eb6784e3eb51f0b98490ae5697f116b2feea974e4afd32e2214f647");
+        mToken = "48eb6784e3eb51f0b98490ae5697f116b2feea974e4afd32e2214f647";
         Mesibo.reset();
-
         /* start mesibo before saving contacts */
         MainApplication.startMesibo();
         Log.v("Mesiboooooooooo", "Started");
     }
 
-    public static void logout() {
-        Mesibo.stop(false);
-
-        Bundle b = new Bundle();
-        b.putString("op", "logout");
-        b.putString("token", mToken);
-        /* end of post data */
-
-        Mesibo.Http http = new Mesibo.Http();
-
-        http.url = SampleAppConfiguration.apiUrl;
-        http.postBundle = b;
-
-        http.listener = new Mesibo.HttpListener() {
-            @Override
-            public boolean Mesibo_onHttpProgress(Mesibo.Http config, int state, int percent) {
-                return true;
-            }
-        };
-
-        http.execute();
-
-        mToken = null;
-        setStringValue("token", "");
-    }
-
-    public static void addContact(String name, String phone) {
-        if(TextUtils.isEmpty(phone)) return;
-
-        Mesibo.UserProfile profile = new Mesibo.UserProfile();
-        profile.name = name;
-        profile.address = phone;
-        if(TextUtils.isEmpty(name))
-            profile.name = phone;
-
-        Mesibo.setUserProfile(profile, false);
-    }
+//    public static void logout() {
+//        Mesibo.stop(false);
+//
+//        Bundle b = new Bundle();
+//        b.putString("op", "logout");
+//        b.putString("token", mToken);
+//        /* end of post data */
+//
+//        Mesibo.Http http = new Mesibo.Http();
+//
+//        http.url = SampleAppConfiguration.apiUrl;
+//        http.postBundle = b;
+//
+//        http.listener = new Mesibo.HttpListener() {
+//            @Override
+//            public boolean Mesibo_onHttpProgress(Mesibo.Http config, int state, int percent) {
+//                return true;
+//            }
+//        };
+//
+//        http.execute();
+//
+//        mToken = null;
+//        setStringValue("token", "");
+//    }
+//
+//    public static void addContact(String name, String phone) {
+//        if(TextUtils.isEmpty(phone)) return;
+//
+//        Mesibo.UserProfile profile = new Mesibo.UserProfile();
+//        profile.name = name;
+//        profile.address = phone;
+//        if(TextUtils.isEmpty(name))
+//            profile.name = phone;
+//
+//        Mesibo.setUserProfile(profile, false);
+//    }
 
     public static boolean setStringValue(String key, String value) {
         try {

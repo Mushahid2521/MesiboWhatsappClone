@@ -56,6 +56,7 @@ public class MainApplication extends Application {
 
         /** [OPTIONAL] Initializa calls if used  */
         mCall = MesiboCall.getInstance();
+        //mCall.setListener(new MisoboCallListenerCustom());
         mCall.init(this);
 
 
@@ -107,4 +108,3 @@ public class MainApplication extends Application {
         return "com.example.mesibochat";
     }
 }
-

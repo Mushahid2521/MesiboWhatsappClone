@@ -52,39 +52,50 @@
             android:text="Login"
             android:layout_marginTop="@dimen/_30sdp"/>
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pick"
+            android:id="@+id/pick"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/image"/>
+
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/messageLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:gravity="center">
-        <Button
-            android:id="@+id/launch_demo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Basic API Demo"
-            android:layout_marginBottom="@dimen/_20sdp"/>
+<!--    <LinearLayout-->
+<!--        android:id="@+id/messageLayout"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:orientation="vertical"-->
+<!--        android:visibility="gone"-->
+<!--        android:gravity="center">-->
+<!--        <Button-->
+<!--            android:id="@+id/launch_demo"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Basic API Demo"-->
+<!--            android:layout_marginBottom="@dimen/_20sdp"/>-->
 
-        <Button
-            android:id="@+id/launch_ui"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Launch Mesibo UI"
-            android:layout_marginBottom="@dimen/_20sdp"
-            />
+<!--        <Button-->
+<!--            android:id="@+id/launch_ui"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Launch Mesibo UI"-->
+<!--            android:layout_marginBottom="@dimen/_20sdp"-->
+<!--            />-->
 
-        <Button
-            android:id="@+id/logout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Logout"
-            />
+<!--        <Button-->
+<!--            android:id="@+id/logout"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Logout"-->
+<!--            />-->
 
-    </LinearLayout>
+<!--    </LinearLayout>-->
 
 
 </LinearLayout>

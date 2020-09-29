@@ -56,7 +56,6 @@ public class MainApplication extends Application {
 
         /** [OPTIONAL] Initializa calls if used  */
         mCall = MesiboCall.getInstance();
-        //mCall.setListener(new MisoboCallListenerCustom());
         mCall.init(this);
 
 

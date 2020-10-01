@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,9 +22,10 @@ public class MainActivity extends AppCompatActivity implements CustomImageEditor
     public ImageView imageView;
 
     @Override
-    public void onImageEdit(int i, String s, String s1, Bitmap bitmap, int i1) {
-        Log.v("Got Youuuu", ".........");
-        imageView.setImageBitmap(bitmap);
+    public void onImageEdit(int i, String path, Bitmap bitmap, int i1) {
+        Uri uri = ImageCropperHelper.getImageUri(this, bitmap);
+        if(uri!=null)
+            imageView.setImageURI(uri);
     }
 
     @Override

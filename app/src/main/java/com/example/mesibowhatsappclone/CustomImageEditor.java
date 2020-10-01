@@ -31,8 +31,8 @@ import com.mesibo.mediapicker.j;
 public class CustomImageEditor extends AppCompatActivity {
     CropImageView cropImageView = null;
     Bitmap bitmap = null;
-    EditText c = null;
-    ImageButton sendButton = null;
+
+    //ImageButton sendButton = null;
     String e = null;
     boolean f = false;
     boolean g = false;
@@ -40,7 +40,7 @@ public class CustomImageEditor extends AppCompatActivity {
     boolean i = true;
     boolean j = false;
     boolean k = false;
-    RelativeLayout l = null;
+
     int m = -1;
     int n = 0;
     int o = 1280;
@@ -57,12 +57,12 @@ public class CustomImageEditor extends AppCompatActivity {
     }
 
     public interface OnImageEditListner {
-        void onImageEdit(int var1, String var2, String var3, Bitmap var4, int var5);
+        void onImageEdit(int var1, String var3, Bitmap var4, int var5);
     }
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.setContentView(com.mesibo.messaging.R.layout.activity_image_caption);
+        this.setContentView(R.layout.activity_image_editior);
         ActionBar var2;
         (var2 = this.getSupportActionBar()).setHomeButtonEnabled(true);
         var2.setDisplayHomeAsUpEnabled(true);
@@ -85,15 +85,13 @@ public class CustomImageEditor extends AppCompatActivity {
 
         this.m = var3.getIntExtra("type", -1);
         this.editListner = ImageCropperHelper.getOnImageEditListner();
-        this.sendButton = (ImageButton)this.findViewById(com.mesibo.messaging.R.id.caption_send);
-        this.c = (EditText)this.findViewById(com.mesibo.messaging.R.id.caption_edit);
-        this.l = (RelativeLayout)this.findViewById(com.mesibo.messaging.R.id.caption_view);
+        //this.sendButton = (ImageButton)this.findViewById(com.mesibo.messaging.R.id.caption_send);
+
         if (!this.h) {
-            this.c.setVisibility(View.INVISIBLE);
         }
 
         label62: {
-            this.cropImageView = (CropImageView)this.findViewById(com.mesibo.messaging.R.id.caption_image);
+            this.cropImageView = (CropImageView)this.findViewById(R.id.crop_img_view);
             this.p = com.mesibo.mediapicker.k.c(this.e);
             int var9 = ((WindowManager)this.getSystemService(WINDOW_SERVICE)).getDefaultDisplay().getRotation();
             boolean var10000;
@@ -161,33 +159,6 @@ public class CustomImageEditor extends AppCompatActivity {
             }
 
             this.cropImageView.setShowCropOverlay(this.j);
-            if (this.sendButton != null) {
-                this.sendButton.setOnClickListener(new View.OnClickListener() {
-                    public final void onClick(View v) {
-                        if (CustomImageEditor.this.cropImageView.d) {
-                            CustomImageEditor.this.a(CustomImageEditor.this.cropImageView.getCropRect());
-                            CustomImageEditor.this.a();
-                        }
-
-                        String var2 = CustomImageEditor.this.c.getText().toString();
-                        if (null != CustomImageEditor.this.editListner) {
-                            CustomImageEditor.this.editListner.onImageEdit(CustomImageEditor.this.m, var2, CustomImageEditor.this.e, CustomImageEditor.this.bitmap, 0);
-                            CustomImageEditor.this.finish();
-                        } else {
-                            if (null != CustomImageEditor.this.bitmap) {
-                                CustomImageEditor.this.bitmap.recycle();
-                            }
-
-                            Intent var3;
-                            (var3 = new Intent()).putExtra("filepath", CustomImageEditor.this.e);
-                            var3.putExtra("message", var2);
-                            CustomImageEditor.this.setResult(-1, var3);
-                            CustomImageEditor.this.finish();
-                        }
-                    }
-                });
-            }
-
             this.b();
         }
     }
@@ -217,7 +188,24 @@ public class CustomImageEditor extends AppCompatActivity {
             }
 
             if (item.getItemId() == R.id.action_ok) {
+                if (CustomImageEditor.this.cropImageView.d) {
+                    CustomImageEditor.this.a(CustomImageEditor.this.cropImageView.getCropRect());
+                    CustomImageEditor.this.a();
+                }
 
+                if (null != CustomImageEditor.this.editListner) {
+                    CustomImageEditor.this.editListner.onImageEdit(CustomImageEditor.this.m, CustomImageEditor.this.e, CustomImageEditor.this.bitmap, 0);
+                    CustomImageEditor.this.finish();
+                } else {
+                    if (null != CustomImageEditor.this.bitmap) {
+                        CustomImageEditor.this.bitmap.recycle();
+                    }
+
+                    Intent var3;
+                    (var3 = new Intent()).putExtra("filepath", CustomImageEditor.this.e);
+                    CustomImageEditor.this.setResult(-1, var3);
+                    CustomImageEditor.this.finish();
+                }
             }
 
             if (item.getItemId() == 16908332) {
@@ -353,7 +341,7 @@ public class CustomImageEditor extends AppCompatActivity {
     }
 
     private void b() {
-        ((InputMethodManager)this.getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(this.c.getWindowToken(), 0);
+        //((InputMethodManager)this.getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(this.c.getWindowToken(), 0);
     }
 
     private void a(boolean var1) {
@@ -363,10 +351,10 @@ public class CustomImageEditor extends AppCompatActivity {
         }
 
         if (this.h) {
-            this.c.setVisibility(!this.g ? View.GONE : View.VISIBLE);
+            //this.c.setVisibility(!this.g ? View.GONE : View.VISIBLE);
         }
 
-        this.l.setVisibility(!this.g ? View.GONE : View.VISIBLE);
+        //this.l.setVisibility(!this.g ? View.GONE : View.VISIBLE);
         if (this.g) {
             if (var1) {
                 this.a(this.cropImageView.getCropRect());
@@ -392,7 +380,7 @@ public class CustomImageEditor extends AppCompatActivity {
             }
 
             if (this.editListner != null) {
-                this.editListner.onImageEdit(this.m, (String)null, this.e, (Bitmap)null, -1);
+                this.editListner.onImageEdit(this.m, this.e, (Bitmap)null, -1);
                 this.finish();
             } else {
                 super.onBackPressed();

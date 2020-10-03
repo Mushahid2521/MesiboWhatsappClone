@@ -3,6 +3,7 @@ package com.example.mesibowhatsappclone;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,15 +17,20 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 
 import com.mesibo.api.Mesibo;
+import com.mesibo.calls.MesiboAudioCallFragment;
 import com.mesibo.calls.MesiboCall;
+import com.mesibo.calls.MesiboIncomingAudioCallFragment;
+import com.mesibo.calls.MesiboVideoCallFragment;
 import com.mesibo.messaging.MesiboMessagingFragment;
 import com.mesibo.messaging.MesiboUI;
 import com.mesibo.messaging.MessagingActivityNew;
 import com.mesibo.messaging.i;
 
-public class CustomMessagingActivityNew extends MessagingActivityNew implements MesiboMessagingFragment.FragmentListener {
+public class CustomMessagingActivityNew extends MessagingActivityNew implements MesiboMessagingFragment.FragmentListener,
+                        MesiboCall.MesiboCallListener{
 
 //    private Toolbar c = null;
 //    i a = null;
@@ -48,6 +54,7 @@ public class CustomMessagingActivityNew extends MessagingActivityNew implements 
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+        MesiboCall.getInstance().setListener(this);
 
         Bundle var2;
 
@@ -146,5 +153,38 @@ public class CustomMessagingActivityNew extends MessagingActivityNew implements 
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    @Override
+    public boolean MesiboCall_onNotify(int type, Mesibo.UserProfile profile, boolean video) {
+
+        return true;
+    }
+
+    @Override
+    public MesiboVideoCallFragment MesiboCall_getVideoCallFragment(Mesibo.UserProfile userProfile) {
+        Log.e("Video Calllllll", ".......................");
+        VideoCallFragment videoCallFragment = new VideoCallFragment();
+        videoCallFragment.setProfile(userProfile);
+
+        return videoCallFragment;
+
+    }
+
+    @Override
+    public MesiboAudioCallFragment MesiboCall_getAudioCallFragment(Mesibo.UserProfile userProfile) {
+        Log.e("Video Calllllll", ".......................");
+        return null;
+    }
+
+
+    @Override
+    public MesiboIncomingAudioCallFragment MesiboCall_getIncomingAudioCallFragment(Mesibo.UserProfile userProfile) {
+        Log.e("Video Calllllll", ".......................");
+        AudioIncomingFragment audioIncomingFragment = new AudioIncomingFragment();
+        audioIncomingFragment.setProfile(userProfile);
+
+
+        return audioIncomingFragment;
     }
 }

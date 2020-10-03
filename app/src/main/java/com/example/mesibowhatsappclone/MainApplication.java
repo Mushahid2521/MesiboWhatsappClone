@@ -56,6 +56,7 @@ public class MainApplication extends Application {
 
         /** [OPTIONAL] Initializa calls if used  */
         mCall = MesiboCall.getInstance();
+        //mCall.setListener(new MesiboCallListenerCustom());
         mCall.init(this);
 
 
@@ -64,6 +65,7 @@ public class MainApplication extends Application {
          * */
         MesiboFileTransferHelper fileTransferHelper = new MesiboFileTransferHelper();
         Mesibo.addListener(fileTransferHelper);
+        MesiboCall.getInstance().setListener(new MesiboCallListenerCustom());
 
 
         /** add other listener - you can add any number of listeners */

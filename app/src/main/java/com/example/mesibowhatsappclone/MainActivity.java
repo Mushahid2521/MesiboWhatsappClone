@@ -23,7 +23,10 @@ public class MainActivity extends AppCompatActivity implements CustomImageEditor
 
     @Override
     public void onImageEdit(int i, String path, Bitmap bitmap, int i1) {
-        Uri uri = ImageCropperHelper.getImageUri(this, bitmap);
+        Uri uri = null;
+        if(bitmap!=null) {
+            uri = ImageCropperHelper.getImageUri(this, bitmap);
+        }
         if(uri!=null)
             imageView.setImageURI(uri);
     }

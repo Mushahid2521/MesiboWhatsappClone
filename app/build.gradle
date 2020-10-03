@@ -43,9 +43,9 @@ dependencies {
 
 
     // Mesibo
-    implementation 'com.mesibo.api:mesibo:1.0.90'
-    implementation 'com.mesibo.api:ui:1.1.32'
-    implementation 'com.mesibo.api:calls:1.0.75'
+    implementation 'com.mesibo.api:mesibo:1.2.0'
+    implementation 'com.mesibo.api:ui:1.2.0'
+    implementation 'com.mesibo.api:calls:1.2.0'
 
     // Circular Image View
     implementation 'de.hdodenhof:circleimageview:2.2.0'

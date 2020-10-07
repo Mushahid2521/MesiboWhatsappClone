@@ -3,11 +3,8 @@ package com.example.mesibowhatsappclone;
 
 import android.app.Application;
 import android.content.Context;
-import android.graphics.BitmapFactory;
-import android.util.Log;
 
 import com.mesibo.api.Mesibo;
-import com.mesibo.api.MesiboFileProvider;
 import com.mesibo.calls.MesiboCall;
 import com.mesibo.calls.MesiboCallConfig;
 import com.mesibo.mediapicker.MediaPicker;
@@ -56,16 +53,20 @@ public class MainApplication extends Application {
 
         /** [OPTIONAL] Initializa calls if used  */
         mCall = MesiboCall.getInstance();
-        //mCall.setListener(new MesiboCallListenerCustom());
+        //mCall.setListener(new MesiboListeners());
         mCall.init(this);
 
 
         /** [Optional] add listener for file transfer handler
          * you only need if you plan to send and receive files using mesibo
          * */
+
+        Mesibo.addListener(MesiboListeners.get_instance());
+
         MesiboFileTransferHelper fileTransferHelper = new MesiboFileTransferHelper();
+
         Mesibo.addListener(fileTransferHelper);
-        MesiboCall.getInstance().setListener(new MesiboCallListenerCustom());
+        MesiboCall.getInstance().setListener(MesiboListeners.get_instance());
 
 
         /** add other listener - you can add any number of listeners */

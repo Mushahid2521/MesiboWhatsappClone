@@ -73,63 +73,6 @@ public class SampleAppWebAPi {
 
     public static void login(String name, String phone) {
 
-//
-//        Bundle b = new Bundle();
-//        b.putString("op", "login");
-//        b.putString("ns", SampleAppConfiguration.namespace);
-//        b.putString("aid", MainApplication.getContext().getPackageName());
-//        b.putString("name", name);
-//        b.putString("phone", phone);
-//        /* end of post data */
-//
-//        Mesibo.Http http = new Mesibo.Http();
-//
-//        http.url = SampleAppConfiguration.apiUrl;
-//        http.postBundle = b;
-//        http.onMainThread = true;
-
-//        http.listener = new Mesibo.HttpListener() {
-//            @Override
-//            public boolean Mesibo_onHttpProgress(Mesibo.Http config, int state, int percent) {
-//
-//
-//                if(100 == percent && Mesibo.Http.STATE_DOWNLOAD == state) {
-//
-//                    //parse response
-//                    String respString = config.getDataString();
-//                    Response response = mGson.fromJson(respString, Response.class);
-//                    if(null == response || !response.result.equalsIgnoreCase("OK")) {
-//                        handler.onApiResponse(false);
-//                        return true;
-//                    }
-//
-//
-//                    setStringValue("token", response.token);
-//                    mToken = response.token;
-//                    Mesibo.reset();
-//
-//                    /* start mesibo before saving contacts */
-//                    MainApplication.startMesibo();
-//
-//                    if(null != response.contacts) {
-//                        for(Contacts c : response.contacts) {
-//                            addContact(c.name, c.phone);
-//                        }
-//                    }
-//
-//                    handler.onApiResponse(true);
-//                    return true;
-//                }
-//
-//                if(percent < 0)
-//                    handler.onApiResponse(false);
-//
-//                return true;
-//            }
-//        };
-//
-//        http.execute();
-
         setStringValue("token", "ce3a32a03240bd86e0f49e6faa19db97add620e5ff2e3314f37e");
         mToken = "ce3a32a03240bd86e0f49e6faa19db97add620e5ff2e3314f37e";
         Mesibo.reset();
@@ -137,43 +80,6 @@ public class SampleAppWebAPi {
         MainApplication.startMesibo();
     }
 
-//    public static void logout() {
-//        Mesibo.stop(false);
-//
-//        Bundle b = new Bundle();
-//        b.putString("op", "logout");
-//        b.putString("token", mToken);
-//        /* end of post data */
-//
-//        Mesibo.Http http = new Mesibo.Http();
-//
-//        http.url = SampleAppConfiguration.apiUrl;
-//        http.postBundle = b;
-//
-//        http.listener = new Mesibo.HttpListener() {
-//            @Override
-//            public boolean Mesibo_onHttpProgress(Mesibo.Http config, int state, int percent) {
-//                return true;
-//            }
-//        };
-//
-//        http.execute();
-//
-//        mToken = null;
-//        setStringValue("token", "");
-//    }
-//
-//    public static void addContact(String name, String phone) {
-//        if(TextUtils.isEmpty(phone)) return;
-//
-//        Mesibo.UserProfile profile = new Mesibo.UserProfile();
-//        profile.name = name;
-//        profile.address = phone;
-//        if(TextUtils.isEmpty(name))
-//            profile.name = phone;
-//
-//        Mesibo.setUserProfile(profile, false);
-//    }
 
     public static boolean setStringValue(String key, String value) {
         try {

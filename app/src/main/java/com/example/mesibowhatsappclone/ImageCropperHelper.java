@@ -36,6 +36,9 @@ public class ImageCropperHelper extends MediaPicker {
         var11.putExtra("squareCrop", squareCrop);
         var11.putExtra("type", type);
         var11.putExtra("drawableid", drawableid);
+
+        Log.v("Data URI", filePath);
+
         onImageEditListner = listener;
         if (maxDimension > 0) {
             var11.putExtra("maxDimension", maxDimension);

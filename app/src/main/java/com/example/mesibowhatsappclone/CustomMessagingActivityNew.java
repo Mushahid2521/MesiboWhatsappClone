@@ -29,8 +29,7 @@ import com.mesibo.messaging.MesiboUI;
 import com.mesibo.messaging.MessagingActivityNew;
 import com.mesibo.messaging.i;
 
-public class CustomMessagingActivityNew extends MessagingActivityNew implements MesiboMessagingFragment.FragmentListener,
-                        MesiboCall.MesiboCallListener{
+public class CustomMessagingActivityNew extends MessagingActivityNew implements MesiboMessagingFragment.FragmentListener{
 
 //    private Toolbar c = null;
 //    i a = null;
@@ -54,7 +53,7 @@ public class CustomMessagingActivityNew extends MessagingActivityNew implements 
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        MesiboCall.getInstance().setListener(this);
+        //MesiboCall.getInstance().setListener(this);
 
         Bundle var2;
 
@@ -155,36 +154,36 @@ public class CustomMessagingActivityNew extends MessagingActivityNew implements 
         super.onResume();
     }
 
-    @Override
-    public boolean MesiboCall_onNotify(int type, Mesibo.UserProfile profile, boolean video) {
-
-        return true;
-    }
-
-    @Override
-    public MesiboVideoCallFragment MesiboCall_getVideoCallFragment(Mesibo.UserProfile userProfile) {
-        Log.e("Video Calllllll", ".......................");
-        VideoCallFragment videoCallFragment = new VideoCallFragment();
-        videoCallFragment.setProfile(userProfile);
-
-        return videoCallFragment;
-
-    }
-
-    @Override
-    public MesiboAudioCallFragment MesiboCall_getAudioCallFragment(Mesibo.UserProfile userProfile) {
-        Log.e("Video Calllllll", ".......................");
-        return null;
-    }
-
-
-    @Override
-    public MesiboIncomingAudioCallFragment MesiboCall_getIncomingAudioCallFragment(Mesibo.UserProfile userProfile) {
-        Log.e("Video Calllllll", ".......................");
-        AudioIncomingFragment audioIncomingFragment = new AudioIncomingFragment();
-        audioIncomingFragment.setProfile(userProfile);
-
-
-        return audioIncomingFragment;
-    }
+//    @Override
+//    public boolean MesiboCall_onNotify(int type, Mesibo.UserProfile profile, boolean video) {
+//
+//        return true;
+//    }
+//
+//    @Override
+//    public MesiboVideoCallFragment MesiboCall_getVideoCallFragment(Mesibo.UserProfile userProfile) {
+//        Log.e("Video Calllllll", ".......................");
+//        VideoCallFragment videoCallFragment = new VideoCallFragment();
+//        videoCallFragment.setProfile(userProfile);
+//
+//        return videoCallFragment;
+//
+//    }
+//
+//    @Override
+//    public MesiboAudioCallFragment MesiboCall_getAudioCallFragment(Mesibo.UserProfile userProfile) {
+//        Log.e("Video Calllllll", ".......................");
+//        return null;
+//    }
+//
+//
+//    @Override
+//    public MesiboIncomingAudioCallFragment MesiboCall_getIncomingAudioCallFragment(Mesibo.UserProfile userProfile) {
+//        Log.e("Video Calllllll", ".......................");
+//        AudioIncomingFragment audioIncomingFragment = new AudioIncomingFragment();
+//        audioIncomingFragment.setProfile(userProfile);
+//
+//
+//        return audioIncomingFragment;
+//    }
 }

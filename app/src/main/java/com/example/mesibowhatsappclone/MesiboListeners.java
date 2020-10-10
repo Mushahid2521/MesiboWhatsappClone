@@ -40,8 +40,9 @@ public class MesiboListeners implements MesiboCall.MesiboCallListener, Mesibo.Me
 
     @Override
     public MesiboAudioCallFragment MesiboCall_getAudioCallFragment(Mesibo.UserProfile userProfile) {
-        AudioCallInProgressFragment audioCallInProgressFragment = new AudioCallInProgressFragment();
-        return audioCallInProgressFragment;
+//        AudioCallInProgressFragment audioCallInProgressFragment = new AudioCallInProgressFragment();
+//        return audioCallInProgressFragment;
+        return null;
     }
 
 

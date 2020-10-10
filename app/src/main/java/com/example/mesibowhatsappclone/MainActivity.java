@@ -30,30 +30,6 @@ public class MainActivity extends AppCompatActivity implements CustomImageEditor
     public ImageView imageView;
 
     @Override
-    public void onImageEdit(int i, String path, Bitmap bitmap, int i1) {
-        Uri uri = null;
-        if(bitmap!=null) {
-            uri = ImageCropperHelper.getImageUri(this, bitmap);
-        }
-        if(uri!=null)
-            imageView.setImageURI(uri);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode == MediaPicker.TYPE_FILEIMAGE && resultCode == RESULT_OK) {
-            String filePath = MediaPicker.processOnActivityResult(this, requestCode, resultCode, data);
-
-
-            ImageCropperHelper.launchEditor(this, MediaPicker.TYPE_FILEIMAGE, -1,
-                    null, filePath, true, false,
-                    false, false, 0, this);
-        }
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -88,6 +64,30 @@ public class MainActivity extends AppCompatActivity implements CustomImageEditor
                 }
             }
         });
+    }
+
+    @Override
+    public void onImageEdit(int i, String path, Bitmap bitmap, int i1) {
+        Uri uri = null;
+        if(bitmap!=null) {
+            uri = ImageCropperHelper.getImageUri(this, bitmap);
+        }
+        if(uri!=null)
+            imageView.setImageURI(uri);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == MediaPicker.TYPE_FILEIMAGE && resultCode == RESULT_OK) {
+            String filePath = MediaPicker.processOnActivityResult(this, requestCode, resultCode, data);
+
+
+            ImageCropperHelper.launchEditor(this, MediaPicker.TYPE_FILEIMAGE, -1,
+                    null, filePath, true, false,
+                    false, false, 0, this);
+        }
     }
 
 
